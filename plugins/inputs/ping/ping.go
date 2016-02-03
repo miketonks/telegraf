@@ -133,7 +133,12 @@ func (p *Ping) args(url string) []string {
 		args = append(args, "-i", strconv.FormatFloat(p.PingInterval, 'f', 1, 64))
 	}
 	if p.Timeout > 0 {
-		args = append(args, "-t", strconv.FormatFloat(p.Timeout, 'f', 1, 64))
+		switch runtime.GOOS {
+		case "darwin", "freebsd":
+			args = append(args, "-t", strconv.FormatFloat(p.Timeout, 'f', 1, 64))
+		case "linux":
+			args = append(args, "-W", strconv.FormatFloat(p.Timeout, 'f', 1, 64))
+		}
 	}
 	if p.Interface != "" {
 		args = append(args, "-I", p.Interface)
