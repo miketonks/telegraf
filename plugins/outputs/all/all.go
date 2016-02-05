@@ -7,6 +7,7 @@ import (
 	_ "github.com/influxdata/telegraf/plugins/outputs/azure_monitor"
 	_ "github.com/influxdata/telegraf/plugins/outputs/cloudwatch"
 	_ "github.com/influxdata/telegraf/plugins/outputs/cratedb"
+    _ "github.com/influxdata/telegraf/plugins/outputs/cmp"
 	_ "github.com/influxdata/telegraf/plugins/outputs/datadog"
 	_ "github.com/influxdata/telegraf/plugins/outputs/discard"
 	_ "github.com/influxdata/telegraf/plugins/outputs/elasticsearch"
