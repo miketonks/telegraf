@@ -65,6 +65,14 @@ var translateMap = map[string]Translation{
 //     "system-uptime": {
 //         Name: "uptime",
 //     },
+    "docker_cpu-usage.percent": {
+        Name: "docker-cpu-usage.system",
+        Unit: "percent",
+    },
+    "docker_mem-usage.percent": {
+        Name: "docker-memory-usage",
+        Unit: "percent",
+    },
 }
 
 type Translation struct {
@@ -121,13 +129,16 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
         suffix := ""
         cpu := m.Tags()["cpu"]
         path := m.Tags()["path"]
+        container_name := m.Tags()["cont_name"]
 
         if len(cpu) > 0 && cpu != "cpu-total" {
             suffix = cpu[3:]
+        } else if len(path) > 0 {
+             suffix = path
+        } else if len(container_name) > 0 {
+            suffix = container_name
         }
-        if len(path) > 0 {
-            suffix = path
-        }
+
 
  		for k, v := range m.Fields() {
             metric_name := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
