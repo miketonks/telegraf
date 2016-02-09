@@ -46,7 +46,7 @@ var translateMap = map[string]Translation{
         Unit: "percent",
     },
     "mem-available.percent": {
-        Name: "memory-used",
+        Name: "memory-usage",
         Unit: "percent",
         Conversion: memory_used_from_available,
     },
@@ -78,15 +78,11 @@ var translateMap = map[string]Translation{
 type Translation struct {
     Name       string
     Unit       string
-    Conversion func(float64) float64
+    Conversion func(interface{}) interface{}
 }
 
-var valueConversionMap = map[string]func(float64)float64 {
-    "memory-used": memory_used_from_available,
-}
-
-func memory_used_from_available(available float64) float64{
-    return (100.0 - available)
+func memory_used_from_available(available interface{}) interface{}{
+    return (100.0 - available.(float64))
 }
 
 type CmpData struct {
@@ -97,15 +93,13 @@ type CmpData struct {
 type CmpMetric struct {
 	Metric     string   `json:"metric"`
 	Unit       string   `json:"unit"`
-	Value      float64  `json:"value"`
+	Value      interface{}  `json:"value"`
 }
 
 func (data *CmpData) AddMetric(item CmpMetric) []CmpMetric {
     data.Metrics = append(data.Metrics, item)
     return data.Metrics
 }
-
-type Point [2]float64
 
 func (a *Cmp) Connect() error {
 	if a.ServerKey == "" || a.CmpInstance == "" || a.ResourceId == "" {
@@ -126,6 +120,7 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 	}
 
 	for _, m := range metrics {
+
         suffix := ""
         cpu := m.Tags()["cpu"]
         path := m.Tags()["path"]
@@ -139,7 +134,6 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
             suffix = container_name
         }
 
-
  		for k, v := range m.Fields() {
             metric_name := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
             translation, found := translateMap[metric_name]
@@ -149,16 +143,15 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
                     cmp_name += "." + suffix
                 }
 
-                value := v.(float64)
                 conversion := translation.Conversion
                 if conversion != nil {
-                    value = conversion(value)
+                    v = conversion(v)
                 }
 
                 cmp_data.AddMetric(CmpMetric{
                     Metric: cmp_name,
                     Unit: translation.Unit,
-                    Value: value,
+                    Value: v,
                 })
             }
         }
