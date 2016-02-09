@@ -54,7 +54,7 @@ var translateMap = map[string]Translation{
         Name: "load-avg.1",
     },
     "system-load5": {
-        Name: "load-avg.15",
+        Name: "load-avg.5",
     },
     "system-load15": {
         Name: "load-avg.15",
