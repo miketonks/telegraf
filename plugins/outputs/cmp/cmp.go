@@ -13,11 +13,11 @@ import (
 )
 
 type Cmp struct {
-	ServerKey    string
-    ResourceId   string
-	CmpInstance  string
-	Timeout      internal.Duration
-    Headers      []string
+	ServerKey   string
+	ResourceId  string
+	CmpInstance string
+	Timeout     internal.Duration
+	Headers     []string
 
 	client *http.Client
 }
@@ -37,68 +37,68 @@ var sampleConfig = `
 `
 
 var translateMap = map[string]Translation{
-    "cpu-usage.user": {
-        Name: "cpu-usage.user",
-        Unit: "percent",
-    },
-    "cpu-usage.system": {
-        Name: "cpu-usage.system",
-        Unit: "percent",
-    },
-    "mem-available.percent": {
-        Name: "memory-usage",
-        Unit: "percent",
-        Conversion: memory_used_from_available,
-    },
-    "system-load1": {
-        Name: "load-avg.1",
-    },
-    "system-load5": {
-        Name: "load-avg.5",
-    },
-    "system-load15": {
-        Name: "load-avg.15",
-    },
-    "disk-used.percent": {
-        Name: "disk-usage",
-    },
-//     "system-uptime": {
-//         Name: "uptime",
-//     },
-    "docker_cpu-usage.percent": {
-        Name: "docker-cpu-usage.system",
-        Unit: "percent",
-    },
-    "docker_mem-usage.percent": {
-        Name: "docker-memory-usage",
-        Unit: "percent",
-    },
+	"cpu-usage.user": {
+		Name: "cpu-usage.user",
+		Unit: "percent",
+	},
+	"cpu-usage.system": {
+		Name: "cpu-usage.system",
+		Unit: "percent",
+	},
+	"mem-available.percent": {
+		Name:       "memory-usage",
+		Unit:       "percent",
+		Conversion: memory_used_from_available,
+	},
+	"system-load1": {
+		Name: "load-avg.1",
+	},
+	"system-load5": {
+		Name: "load-avg.5",
+	},
+	"system-load15": {
+		Name: "load-avg.15",
+	},
+	"disk-used.percent": {
+		Name: "disk-usage",
+	},
+	//     "system-uptime": {
+	//         Name: "uptime",
+	//     },
+	"docker_cpu-usage.percent": {
+		Name: "docker-cpu-usage.system",
+		Unit: "percent",
+	},
+	"docker_mem-usage.percent": {
+		Name: "docker-memory-usage",
+		Unit: "percent",
+	},
 }
 
 type Translation struct {
-    Name       string
-    Unit       string
-    Conversion func(interface{}) interface{}
+	Name       string
+	Unit       string
+	Conversion func(interface{}) interface{}
 }
 
-func memory_used_from_available(available interface{}) interface{}{
-    return (100.0 - available.(float64))
+func memory_used_from_available(available interface{}) interface{} {
+	return (100.0 - available.(float64))
 }
 
 type CmpData struct {
-    ResourceId string `json:"resource_id"`
-    Metrics    []CmpMetric  `json:"metrics"`
+	ResourceId string      `json:"resource_id"`
+	Metrics    []CmpMetric `json:"metrics"`
 }
 
 type CmpMetric struct {
-	Metric     string   `json:"metric"`
-	Unit       string   `json:"unit"`
-	Value      interface{}  `json:"value"`
+	Metric string      `json:"metric"`
+	Unit   string      `json:"unit"`
+	Value  interface{} `json:"value"`
 }
 
 func (data *CmpData) AddMetric(item CmpMetric) []CmpMetric {
-    data.Metrics = append(data.Metrics, item)
-    return data.Metrics
+	data.Metrics = append(data.Metrics, item)
+	return data.Metrics
 }
 
 func (a *Cmp) Connect() error {
@@ -116,45 +116,45 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		return nil
 	}
 	cmp_data := &CmpData{
-	   ResourceId: a.ResourceId,
+		ResourceId: a.ResourceId,
 	}
 
 	for _, m := range metrics {
 
-        suffix := ""
-        cpu := m.Tags()["cpu"]
-        path := m.Tags()["path"]
-        container_name := m.Tags()["cont_name"]
+		suffix := ""
+		cpu := m.Tags()["cpu"]
+		path := m.Tags()["path"]
+		container_name := m.Tags()["cont_name"]
 
-        if len(cpu) > 0 && cpu != "cpu-total" {
-            suffix = cpu[3:]
-        } else if len(path) > 0 {
-             suffix = path
-        } else if len(container_name) > 0 {
-            suffix = container_name
-        }
+		if len(cpu) > 0 && cpu != "cpu-total" {
+			suffix = cpu[3:]
+		} else if len(path) > 0 {
+			suffix = path
+		} else if len(container_name) > 0 {
+			suffix = container_name
+		}
 
- 		for k, v := range m.Fields() {
-            metric_name := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
-            translation, found := translateMap[metric_name]
-            if found {
-                cmp_name := translation.Name
-                if len(suffix) > 0 {
-                    cmp_name += "." + suffix
-                }
+		for k, v := range m.Fields() {
+			metric_name := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
+			translation, found := translateMap[metric_name]
+			if found {
+				cmp_name := translation.Name
+				if len(suffix) > 0 {
+					cmp_name += "." + suffix
+				}
 
-                conversion := translation.Conversion
-                if conversion != nil {
-                    v = conversion(v)
-                }
+				conversion := translation.Conversion
+				if conversion != nil {
+					v = conversion(v)
+				}
 
-                cmp_data.AddMetric(CmpMetric{
-                    Metric: cmp_name,
-                    Unit: translation.Unit,
-                    Value: v,
-                })
-            }
-        }
+				cmp_data.AddMetric(CmpMetric{
+					Metric: cmp_name,
+					Unit:   translation.Unit,
+					Value:  v,
+				})
+			}
+		}
 	}
 
 	cmp_bytes, err := json.Marshal(cmp_data)
@@ -167,10 +167,10 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 	}
 	req.Header.Add("Content-Type", "application/json")
 
-    for _, header := range a.Headers {
-        s := strings.Split(header, ":")
-        req.Header.Add(s[0], s[1])
-    }
+	for _, header := range a.Headers {
+		s := strings.Split(header, ":")
+		req.Header.Add(s[0], s[1])
+	}
 
 	resp, err := a.client.Do(req)
 	if err != nil {
