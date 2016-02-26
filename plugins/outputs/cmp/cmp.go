@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/influxdata/telegraf"
 	"github.com/influxdata/telegraf/internal"
@@ -86,14 +87,16 @@ func memory_used_from_available(available interface{}) interface{} {
 }
 
 type CmpData struct {
-	ResourceId string      `json:"resource_id"`
-	Metrics    []CmpMetric `json:"metrics"`
+	MonitoringSystem string      `json:"monitoring_system"`
+	ResourceId       string      `json:"resource_id"`
+	Metrics          []CmpMetric `json:"metrics"`
 }
 
 type CmpMetric struct {
-	Metric string      `json:"metric"`
-	Unit   string      `json:"unit"`
-	Value  interface{} `json:"value"`
+	Metric string    `json:"metric"`
+	Unit   string    `json:"unit"`
+	Value  float64   `json:"value"`
+	Time   time.Time `json:"time"`
 }
 
 func (data *CmpData) AddMetric(item CmpMetric) []CmpMetric {
@@ -116,7 +119,8 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		return nil
 	}
 	cmp_data := &CmpData{
-		ResourceId: a.ResourceId,
+		MonitoringSystem: "telegraf",
+		ResourceId:       a.ResourceId,
 	}
 
 	for _, m := range metrics {
@@ -134,6 +138,7 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 			suffix = container_name
 		}
 
+		timestamp := m.Time()
 		for k, v := range m.Fields() {
 			metric_name := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
 			translation, found := translateMap[metric_name]
@@ -151,7 +156,8 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 				cmp_data.AddMetric(CmpMetric{
 					Metric: cmp_name,
 					Unit:   translation.Unit,
-					Value:  v,
+					Value:  v.(float64),
+					Time:   timestamp,
 				})
 			}
 		}
