@@ -2,6 +2,7 @@ package cmp
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -14,18 +15,19 @@ import (
 )
 
 type Cmp struct {
-	ServerKey   string
+	ApiUser     string
+	ApiKey      string
 	ResourceId  string
 	CmpInstance string
 	Timeout     internal.Duration
-	Headers     []string
 
 	client *http.Client
 }
 
 var sampleConfig = `
-  # Cmp Server Key
-  server_key = "my-server-key" # required.
+  # Cmp Api User and Key
+  api_user = "my-api-user" # required.
+  api_key = "my-api-key" # required.
   resource_id = "1234"
 
   # Cmp Instance URL
@@ -33,8 +35,6 @@ var sampleConfig = `
 
   # Connection timeout.
   # timeout = "5s"
-
-  headers = ["X-Header1:12345", "X-Header2:23456"]
 `
 
 var translateMap = map[string]Translation{
@@ -105,11 +105,16 @@ func (data *CmpData) AddMetric(item CmpMetric) []CmpMetric {
 }
 
 func (a *Cmp) Connect() error {
-	if a.ServerKey == "" || a.CmpInstance == "" || a.ResourceId == "" {
-		return fmt.Errorf("server_key, resource_id and cmp_instance are required fields for cmp output")
+	if a.ApiUser == "" || a.ApiKey == "" || a.CmpInstance == "" || a.ResourceId == "" {
+		return fmt.Errorf("api_user, api_key, resource_id and cmp_instance are required fields for cmp output")
 	}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
 	a.client = &http.Client{
-		Timeout: a.Timeout.Duration,
+		Transport: tr,
+		Timeout:   a.Timeout.Duration,
 	}
 	return nil
 }
@@ -172,11 +177,7 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		return fmt.Errorf("unable to create http.Request, %s\n", err.Error())
 	}
 	req.Header.Add("Content-Type", "application/json")
-
-	for _, header := range a.Headers {
-		s := strings.Split(header, ":")
-		req.Header.Add(s[0], s[1])
-	}
+	req.SetBasicAuth(a.ApiUser, a.ApiKey)
 
 	resp, err := a.client.Do(req)
 	if err != nil {
