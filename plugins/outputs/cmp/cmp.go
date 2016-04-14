@@ -38,10 +38,15 @@ var sampleConfig = `
 `
 
 var translateMap = map[string]Translation{
-	"cpu-usage.user": {
-		Name: "cpu-usage.user",
-		Unit: "percent",
-	},
+    "cpu-usage.idle": {
+        Name: "cpu-usage",
+        Unit: "percent",
+        Conversion: subtract_from_100_percent,
+    },
+    "cpu-usage.user": {
+        Name: "cpu-usage.user",
+        Unit: "percent",
+    },
 	"cpu-usage.system": {
 		Name: "cpu-usage.system",
 		Unit: "percent",
@@ -49,7 +54,7 @@ var translateMap = map[string]Translation{
 	"mem-available.percent": {
 		Name:       "memory-usage",
 		Unit:       "percent",
-		Conversion: memory_used_from_available,
+		Conversion: subtract_from_100_percent,
 	},
 	"system-load1": {
 		Name: "load-avg-1",
@@ -74,7 +79,109 @@ var translateMap = map[string]Translation{
 		Name: "docker-memory-usage",
 		Unit: "percent",
 	},
+    "elasticsearch_cluster_health-status": {
+        Name: "es-status",
+        Unit: "",
+        Conversion: es_cluster_health,
+    },
+    "elasticsearch_cluster_health-number.of.nodes": {
+        Name: "es-nodes",
+        Unit: "",
+    },
+    "elasticsearch_cluster_health-unassigned.shards": {
+        Name: "es-unassigned-shards",
+        Unit: "",
+    },
+    "elasticsearch_cluster_health-active.shards": {
+        Name: "es-active-shards",
+        Unit: "",
+    },
+    "elasticsearch_cluster_health-active.primary.shards": {
+        Name: "es-primary-shards",
+        Unit: "",
+    },
+    "elasticsearch_cluster_health-initializing.shards": {
+        Name: "es-initializing-shards",
+        Unit: "",
+    },
+    "elasticsearch_cluster_health-relocating.shards": {
+        Name: "es-relocating-shards",
+        Unit: "",
+    },
+    "elasticsearch_jvm-mem.heap.used.in.bytes": {
+        Name: "es-heap.used",
+        Unit: "B",
+    },
+    "elasticsearch_jvm-mem.heap.committed.in.bytes": {
+        Name: "es-heap.committed",
+        Unit: "B",
+    },
+    "elasticsearch_jvm-mem.non.heap.used.in.bytes": {
+        Name: "es-nonheap.used",
+        Unit: "B",
+    },
+    "elasticsearch_jvm-mem.non.heap.committed.in.bytes": {
+        Name: "es-nonheap.committed",
+        Unit: "B",
+    },
+    "elasticsearch_indices-search.query.total": {
+        Name: "es-search-requests.query",
+        Unit: "",
+    },
+    "elasticsearch_indices-search.fetch.total": {
+        Name: "es-search-requests.fetch",
+        Unit: "",
+    },
+    "elasticsearch_indices-search.query.time.in.millis": {
+        Name: "es-search-time.query",
+        Unit: "Ms",
+    },
+    "elasticsearch_indices-search.fetch.time.in.millis": {
+        Name: "es-search-time.fetch",
+        Unit: "Ms",
+    },
+    "elasticsearch_indices-get.total": {
+        Name: "es-get-requests.get",
+        Unit: "",
+    },
+    "elasticsearch_indices-get.exists.total": {
+        Name: "es-get-requests.exists",
+        Unit: "",
+    },
+    "elasticsearch_indices-get.missing.total": {
+        Name: "es-get-requests.missing",
+        Unit: "",
+    },
+    "elasticsearch_indices-get.time.in.millis": {
+        Name: "es-get-time.get",
+        Unit: "Ms",
+    },
+    "elasticsearch_indices-get.exists.time.in.millis": {
+        Name: "es-get-time.exists",
+        Unit: "Ms",
+    },
+    "elasticsearch_indices-get.missing.time.in.millis": {
+        Name: "es-get-time.missing",
+        Unit: "Ms",
+    },
+    "elasticsearch_indices-indexing.index.total": {
+        Name: "es-index-requests.index",
+        Unit: "",
+    },
+    "elasticsearch_indices-indexing.delete.total": {
+        Name: "es-index-requests.delete",
+        Unit: "",
+    },
+    "elasticsearch_indices-indexing.index.time.in.millis": {
+        Name: "es-index-time.index",
+        Unit: "",
+    },
+    "elasticsearch_indices-indexing.delete.time.in.millis": {
+        Name: "es-index-time.delete",
+        Unit: "",
+    },
 }
+
 
 type Translation struct {
 	Name       string
@@ -82,8 +189,30 @@ type Translation struct {
 	Conversion func(interface{}) interface{}
 }
 
-func memory_used_from_available(available interface{}) interface{} {
+func subtract_from_100_percent(available interface{}) interface{} {
 	return (100.0 - available.(float64))
+}
+
+func es_cluster_health(status interface{}) interface{} {
+    switch status.(string) {
+        case "green":
+            return 0.0
+        case "yellow":
+            return 1.0
+        case "red":
+            return 2.0
+        default:
+            return 3.0
+    }
+}
+
+func to_float64(value interface{}) float64 {
+    switch v := value.(type) {
+        case int64:
+            return float64(v)
+        default:
+            return 0.0
+    }
 }
 
 type CmpData struct {
@@ -161,7 +290,7 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 				cmp_data.AddMetric(CmpMetric{
 					Metric: cmp_name,
 					Unit:   translation.Unit,
-					Value:  v.(float64),
+					Value:  to_float64(v),
 					Time:   timestamp,
 				})
 			}
