@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/influxdata/telegraf"
 	"github.com/influxdata/telegraf/internal"
@@ -67,6 +66,7 @@ var translateMap = map[string]Translation{
 	},
 	"disk-used.percent": {
 		Name: "disk-usage",
+        Unit: "percent",
 	},
 	//     "system-uptime": {
 	//         Name: "uptime",
@@ -88,40 +88,40 @@ var translateMap = map[string]Translation{
         Name: "es-nodes",
         Unit: "",
     },
-    "elasticsearch_cluster_health-unassigned.shards": {
-        Name: "es-unassigned-shards",
-        Unit: "",
-    },
     "elasticsearch_cluster_health-active.shards": {
-        Name: "es-active-shards",
+        Name: "es-shards.active",
         Unit: "",
     },
     "elasticsearch_cluster_health-active.primary.shards": {
-        Name: "es-primary-shards",
+        Name: "es-shards.primary",
+        Unit: "",
+    },
+    "elasticsearch_cluster_health-unassigned.shards": {
+        Name: "es-shards.unassigned",
         Unit: "",
     },
     "elasticsearch_cluster_health-initializing.shards": {
-        Name: "es-initializing-shards",
+        Name: "es-shards.initializing",
         Unit: "",
     },
     "elasticsearch_cluster_health-relocating.shards": {
-        Name: "es-relocating-shards",
+        Name: "es-shards.relocating",
         Unit: "",
     },
     "elasticsearch_jvm-mem.heap.used.in.bytes": {
-        Name: "es-heap.used",
+        Name: "es-memory-usage.heap.used",
         Unit: "B",
     },
     "elasticsearch_jvm-mem.heap.committed.in.bytes": {
-        Name: "es-heap.committed",
+        Name: "es-memory-usage.heap.committed",
         Unit: "B",
     },
     "elasticsearch_jvm-mem.non.heap.used.in.bytes": {
-        Name: "es-nonheap.used",
+        Name: "es-memory-usage.nonheap.used",
         Unit: "B",
     },
     "elasticsearch_jvm-mem.non.heap.committed.in.bytes": {
-        Name: "es-nonheap.committed",
+        Name: "es-memory-usage.nonheap.committed",
         Unit: "B",
     },
     "elasticsearch_indices-search.query.total": {
@@ -206,15 +206,6 @@ func es_cluster_health(status interface{}) interface{} {
     }
 }
 
-func to_float64(value interface{}) float64 {
-    switch v := value.(type) {
-        case int64:
-            return float64(v)
-        default:
-            return 0.0
-    }
-}
-
 type CmpData struct {
 	MonitoringSystem string      `json:"monitoring_system"`
 	ResourceId       string      `json:"resource_id"`
@@ -224,8 +215,8 @@ type CmpData struct {
 type CmpMetric struct {
 	Metric string    `json:"metric"`
 	Unit   string    `json:"unit"`
-	Value  float64   `json:"value"`
-	Time   time.Time `json:"time"`
+	Value  string    `json:"value"`
+	Time   string    `json:"time"`
 }
 
 func (data *CmpData) AddMetric(item CmpMetric) []CmpMetric {
@@ -272,7 +263,7 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 			suffix = container_name
 		}
 
-		timestamp := m.Time()
+		timestamp := m.Time().UTC().Format("2006-01-02T15:04:05.999999Z")
 		for k, v := range m.Fields() {
 			metric_name := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
 			translation, found := translateMap[metric_name]
@@ -287,10 +278,11 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 					v = conversion(v)
 				}
 
+				// fmt.Printf("SEND: %s: %s %v \n", timestamp, cmp_name, v)
 				cmp_data.AddMetric(CmpMetric{
 					Metric: cmp_name,
 					Unit:   translation.Unit,
-					Value:  to_float64(v),
+					Value:  fmt.Sprintf("%v", v),
 					Time:   timestamp,
 				})
 			}
