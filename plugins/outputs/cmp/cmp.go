@@ -125,60 +125,67 @@ var translateMap = map[string]Translation{
 		Unit: "B",
 	},
 	"elasticsearch_indices-search.query.total": {
-		Name: "es-search-requests.query",
-		Unit: "",
+		Name: "es-search-requests.query.cntr",
+		Unit: "requests",
 	},
 	"elasticsearch_indices-search.fetch.total": {
-		Name: "es-search-requests.fetch",
-		Unit: "",
+		Name: "es-search-requests.fetch.cntr",
+		Unit: "requests",
 	},
 	"elasticsearch_indices-search.query.time.in.millis": {
-		Name: "es-search-time.query",
-		Unit: "Ms",
+		Name:       "es-search-time.query",
+		Unit:       "s",
+		Conversion: millis_to_seconds,
 	},
 	"elasticsearch_indices-search.fetch.time.in.millis": {
-		Name: "es-search-time.fetch",
-		Unit: "Ms",
+		Name:       "es-search-time.fetch",
+		Unit:       "s",
+		Conversion: millis_to_seconds,
 	},
 	"elasticsearch_indices-get.total": {
-		Name: "es-get-requests.get",
-		Unit: "",
+		Name: "es-get-requests.get.cntr",
+		Unit: "requests",
 	},
 	"elasticsearch_indices-get.exists.total": {
-		Name: "es-get-requests.exists",
-		Unit: "",
+		Name: "es-get-requests.exists.cntr",
+		Unit: "requests",
 	},
 	"elasticsearch_indices-get.missing.total": {
-		Name: "es-get-requests.missing",
-		Unit: "",
+		Name: "es-get-requests.missing.cntr",
+		Unit: "requests",
 	},
 	"elasticsearch_indices-get.time.in.millis": {
-		Name: "es-get-time.get",
-		Unit: "Ms",
+		Name:       "es-get-time.get",
+		Unit:       "s",
+		Conversion: millis_to_seconds,
 	},
 	"elasticsearch_indices-get.exists.time.in.millis": {
-		Name: "es-get-time.exists",
-		Unit: "Ms",
+		Name:       "es-get-time.exists",
+		Unit:       "s",
+		Conversion: millis_to_seconds,
 	},
 	"elasticsearch_indices-get.missing.time.in.millis": {
-		Name: "es-get-time.missing",
-		Unit: "Ms",
+		Name:       "es-get-time.missing",
+		Unit:       "s",
+		Conversion: millis_to_seconds,
 	},
 	"elasticsearch_indices-indexing.index.total": {
-		Name: "es-index-requests.index",
-		Unit: "",
+		Name: "es-index-requests.index.cntr",
+		Unit: "requests",
 	},
 	"elasticsearch_indices-indexing.delete.total": {
-		Name: "es-index-requests.delete",
-		Unit: "",
+		Name: "es-index-requests.delete.cntr",
+		Unit: "requests",
 	},
 	"elasticsearch_indices-indexing.index.time.in.millis": {
-		Name: "es-index-time.index",
-		Unit: "",
+		Name:       "es-index-time.index",
+		Unit:       "s",
+		Conversion: millis_to_seconds,
 	},
 	"elasticsearch_indices-indexing.delete.time.in.millis": {
-		Name: "es-index-time.delete",
-		Unit: "",
+		Name:       "es-index-time.delete",
+		Unit:       "s",
+		Conversion: millis_to_seconds,
 	},
 }
 
@@ -190,6 +197,10 @@ type Translation struct {
 
 func subtract_from_100_percent(available interface{}) interface{} {
 	return (100.0 - available.(float64))
+}
+
+func millis_to_seconds(available interface{}) interface{} {
+	return available.(float64) / 1000.0
 }
 
 func es_cluster_health(status interface{}) interface{} {
