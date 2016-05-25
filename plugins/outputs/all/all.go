@@ -4,6 +4,7 @@ import (
 	_ "github.com/influxdata/telegraf/plugins/outputs/amon"
 	_ "github.com/influxdata/telegraf/plugins/outputs/amqp"
 	_ "github.com/influxdata/telegraf/plugins/outputs/cloudwatch"
+    _ "github.com/influxdata/telegraf/plugins/outputs/cmp"
 	_ "github.com/influxdata/telegraf/plugins/outputs/datadog"
 	_ "github.com/influxdata/telegraf/plugins/outputs/file"
 	_ "github.com/influxdata/telegraf/plugins/outputs/graphite"
