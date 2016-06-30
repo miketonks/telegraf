@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -19,6 +20,7 @@ type Cmp struct {
 	ResourceId  string
 	CmpInstance string
 	Timeout     internal.Duration
+	Debug       bool
 
 	client *http.Client
 }
@@ -34,6 +36,9 @@ var sampleConfig = `
 
   # Connection timeout.
   # timeout = "5s"
+  
+  # Print verbose debug messages to console
+  debug = false
 `
 
 var translateMap = map[string]Translation{
@@ -135,12 +140,12 @@ var translateMap = map[string]Translation{
 	"elasticsearch_indices-search.query.time.in.millis": {
 		Name:       "es-search-time.query",
 		Unit:       "s",
-		Conversion: millis_to_seconds,
+		Conversion: divide_by(1000.0),
 	},
 	"elasticsearch_indices-search.fetch.time.in.millis": {
 		Name:       "es-search-time.fetch",
 		Unit:       "s",
-		Conversion: millis_to_seconds,
+		Conversion: divide_by(1000.0),
 	},
 	"elasticsearch_indices-get.total": {
 		Name: "es-get-requests.get.cntr",
@@ -157,17 +162,17 @@ var translateMap = map[string]Translation{
 	"elasticsearch_indices-get.time.in.millis": {
 		Name:       "es-get-time.get",
 		Unit:       "s",
-		Conversion: millis_to_seconds,
+		Conversion: divide_by(1000.0),
 	},
 	"elasticsearch_indices-get.exists.time.in.millis": {
 		Name:       "es-get-time.exists",
 		Unit:       "s",
-		Conversion: millis_to_seconds,
+		Conversion: divide_by(1000.0),
 	},
 	"elasticsearch_indices-get.missing.time.in.millis": {
 		Name:       "es-get-time.missing",
 		Unit:       "s",
-		Conversion: millis_to_seconds,
+		Conversion: divide_by(1000.0),
 	},
 	"elasticsearch_indices-indexing.index.total": {
 		Name: "es-index-requests.index.cntr",
@@ -180,12 +185,166 @@ var translateMap = map[string]Translation{
 	"elasticsearch_indices-indexing.index.time.in.millis": {
 		Name:       "es-index-time.index",
 		Unit:       "s",
-		Conversion: millis_to_seconds,
+		Conversion: divide_by(1000.0),
 	},
 	"elasticsearch_indices-indexing.delete.time.in.millis": {
 		Name:       "es-index-time.delete",
 		Unit:       "s",
-		Conversion: millis_to_seconds,
+		Conversion: divide_by(1000.0),
+	},
+	"mongodb-open.connections": {
+		Name: "mongodb-open-connections",
+		Unit: "connections",
+	},
+	"mongodb-net.in.bytes": {
+		Name: "mongodb-network-in",
+		Unit: "B/s",
+	},
+	"mongodb-net.out.bytes": {
+		Name: "mongodb-network-out",
+		Unit: "B/s",
+	},
+	"mongodb-active.reads": {
+		Name: "mongodb-active-reads",
+		Unit: "",
+	},
+	"mongodb-active.writes": {
+		Name: "mongodb-active-writes",
+		Unit: "",
+	},
+	"mongodb-queued.reads": {
+		Name: "mongodb-queued-reads",
+		Unit: "",
+	},
+	"mongodb-queued.writes": {
+		Name: "mongodb-queued-writes",
+		Unit: "",
+	},
+	"mongodb-queries.per.sec": {
+		Name: "mongodb-ops.queries",
+		Unit: "operations/s",
+	},
+	"mongodb-inserts.per.sec": {
+		Name: "mongodb-ops.inserts",
+		Unit: "operations/s",
+	},
+	"mongodb-updates.per.sec": {
+		Name: "mongodb-ops.updates",
+		Unit: "operations/s",
+	},
+	"mongodb-deletes.per.sec": {
+		Name: "mongodb-ops.deletes",
+		Unit: "operations/s",
+	},
+	"mongodb-commands.per.sec": {
+		Name: "mongodb-ops.commands",
+		Unit: "operations/s",
+	},
+	"mongodb-getmores.per.sec": {
+		Name: "mongodb-ops.getmores",
+		Unit: "operations/s",
+	},
+	"mongodb-flushes.per.sec": {
+		Name: "mongodb-ops.flushes",
+		Unit: "operations/s",
+	},
+	"mongodb-resident.megabytes": {
+		Name:       "mongodb-memory-resident",
+		Unit:       "B",
+		Conversion: divide_by(1000.0 * 1000.0),
+	},
+	"mongodb-vsize.megabytes": {
+		Name:       "mongodb-memory-vsize",
+		Unit:       "B",
+		Conversion: divide_by(1000.0 * 1000.0),
+	},
+	"mongodb-percent.cache.dirty ": {
+		Name: "mongodb-cache-dirty",
+		Unit: "percent",
+	},
+	"mongodb-percent.cache.used": {
+		Name: "mongodb-cache-used",
+		Unit: "percent",
+	},
+	"Logins/sec | General Statistics-value": {
+		Name: "mssql-logins",
+		Unit: "count/s",
+	},
+	"Logouts/sec | General Statistics-value": {
+		Name: "mssql-logouts",
+		Unit: "count/s",
+	},
+	"Processes blocked | General Statistics-value": {
+		Name: "mssql-blocked-processes",
+		Unit: "count",
+	},
+	"User Connections | General Statistics-value": {
+		Name: "mssql-user-connections",
+		Unit: "count",
+	},
+	"Batch Requests/sec | SQL Statistics-value": {
+		Name: "mssql-batch-requests",
+		Unit: "requests/s",
+	},
+	"Lock Waits/sec | _Total | Locks-value": {
+		Name: "mssql-lock-waits",
+		Unit: "count/s",
+	},
+	"Latch Waits/sec | Latches-value": {
+		Name: "mssql-latch-waits",
+		Unit: "count/s",
+	},
+	"Lock Timeouts (timeout > 0)/sec | _Total | Locks-value": {
+		Name: "mssql-lock-timeouts",
+		Unit: "count/s",
+	},
+	"Number of Deadlocks/sec | _Total | Locks-value": {
+		Name: "mssql-deadlocks",
+		Unit: "count/s",
+	},
+	"Database Cache Memory (KB) | Memory Manager-value": {
+		Name:       "mssql-memory-db-cache",
+		Unit:       "B",
+		Conversion: divide_by(1024.0),
+	},
+	"Log Pool Memory (KB) | Memory Manager-value": {
+		Name:       "mssql-memory-log-pool",
+		Unit:       "B",
+		Conversion: divide_by(1024.0),
+	},
+	"Optimizer Memory (KB) | Memory Manager-value": {
+		Name:       "mssql-memory-optimizer",
+		Unit:       "B",
+		Conversion: divide_by(1024.0),
+	},
+	"SQL Cache Memory (KB) | Memory Manager-value": {
+		Name:       "mssql-memory-sql-cache",
+		Unit:       "B",
+		Conversion: divide_by(1024.0),
+	},
+	"Transactions/sec | _Total | Databases-value": {
+		Name: "mssql-transactions",
+		Unit: "count/s",
+	},
+	"Write Transactions/sec | _Total | Databases-value": {
+		Name: "mssql-write-transactions",
+		Unit: "count/s",
+	},
+	"SQL Compilations/sec | SQL Statistics-value": {
+		Name: "mssql-sql-compilations",
+		Unit: "count/s",
+	},
+	"SQL Re-Compilations/sec | SQL Statistics-value": {
+		Name: "mssql-sql-recompilations",
+		Unit: "count/s",
+	},
+	"Log Flush Wait Time | _Total | Databases-value": {
+		Name: "mssql-log-flush-wait-time",
+		Unit: "s",
+	},
+	"Log Flushes/sec | _Total | Databases-value": {
+		Name: "mssql-log-flushes",
+		Unit: "count/s",
 	},
 }
 
@@ -195,12 +354,21 @@ type Translation struct {
 	Conversion func(interface{}) interface{}
 }
 
-func subtract_from_100_percent(available interface{}) interface{} {
-	return (100.0 - available.(float64))
+func subtract_from_100_percent(value interface{}) interface{} {
+	return (100.0 - value.(float64))
 }
 
-func millis_to_seconds(available interface{}) interface{} {
-	return available.(float64) / 1000.0
+func divide_by(divisor float64) func(value interface{}) interface{} {
+	return func(value interface{}) interface{} {
+		switch v := value.(type) {
+		case int64:
+			return float64(v) / 1000.0
+		case float64:
+			return v / 1000.0
+		default:
+			return 0.0
+		}
+	}
 }
 
 func es_cluster_health(status interface{}) interface{} {
@@ -260,6 +428,10 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 
 	for _, m := range metrics {
 
+		if a.Debug {
+			log.Printf("METRIC: %+v", m)
+		}
+
 		suffix := ""
 		cpu := m.Tags()["cpu"]
 		path := m.Tags()["path"]
@@ -288,13 +460,17 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 					v = conversion(v)
 				}
 
-				// fmt.Printf("SEND: %s: %s %v \n", timestamp, cmp_name, v)
+				if a.Debug {
+					log.Printf("SEND: %s: %s %v", timestamp, cmp_name, v)
+				}
 				cmp_data.AddMetric(CmpMetric{
 					Metric: cmp_name,
 					Unit:   translation.Unit,
 					Value:  fmt.Sprintf("%v", v),
 					Time:   timestamp,
 				})
+			} else if a.Debug {
+				log.Printf("Not Matched: %s %v", metric_name, v)
 			}
 		}
 	}
