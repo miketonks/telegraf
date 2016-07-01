@@ -3,3 +3,7 @@
 /telegraf.exe
 /telegraf.gz
 /vendor
+.idea
+*~
+*#
+*.swp
