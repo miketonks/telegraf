@@ -36,7 +36,7 @@ var sampleConfig = `
 
   # Connection timeout.
   # timeout = "5s"
-  
+
   # Print verbose debug messages to console
   debug = false
 `
@@ -345,6 +345,62 @@ var translateMap = map[string]Translation{
 	"Log Flushes/sec | _Total | Databases-value": {
 		Name: "mssql-log-flushes",
 		Unit: "count/s",
+	},
+	"nginx-waiting": {
+		Name: "nginx-waiting",
+		Unit: "connections",
+	},
+	"nginx-writing": {
+		Name: "nginx-writing",
+		Unit: "requests",
+	},
+	"nginx-reading": {
+		Name: "nginx-reading",
+		Unit: "requests",
+	},
+	"nginx-handled": {
+		Name: "nginx-handled",
+		Unit: "connections",
+	},
+	"nginx-active": {
+		Name: "nginx-active",
+		Unit: "connections",
+	},
+	"nginx-accepts": {
+		Name: "nginx-accepts",
+		Unit: "connections",
+	},
+	"nginx-requests": {
+		Name: "nginx-requests",
+		Unit: "requests",
+	},
+	"uwsgi_summary-memory-vsize": {
+		Name: "uwsgi-memory-vsize",
+		Unit: "B",
+	},
+	"uwsgi_summary-memory-resident": {
+		Name: "uwsgi-memory-resident",
+		Unit: "B",
+	},
+	"uwsgi_summary-request-time": {
+		Name: "uwsgi-request-time",
+		Unit: "ms",
+	},
+	"uwsgi_summary-requests": {
+		Name: "uwsgi-requests.cntr",
+		Unit: "requests",
+	},
+	"uwsgi_summary-workers": {
+		Name: "uwsgi-workers",
+		Unit: "",
+	},
+	"uwsgi_summary-active-workers": {
+		Name: "uwsgi-active-workers",
+		Unit: "",
+	},
+	"uwsgi_summary-exceptions": {
+		Name: "uwsgi-exceptions.cntr",
+		Unit: "exceptions",
 	},
 }
 
