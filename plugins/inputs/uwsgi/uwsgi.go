@@ -110,6 +110,7 @@ func (u *Uwsgi) gatherSummary(acc telegraf.Accumulator, s *StatsServer) {
 	requests := 0
 	workers := len(s.Workers)
 	active_workers := 0
+	rt_workers := 0
 	exceptions := 0
 	memory_resident := 0
 	memory_vsize := 0
@@ -121,10 +122,17 @@ func (u *Uwsgi) gatherSummary(acc telegraf.Accumulator, s *StatsServer) {
 		memory_vsize += w.Vsz
 		if w.Status != "idle" {
 			active_workers++
+		}
+		if w.AvgRt > 0 {
+			rt_workers++
 			rt += w.AvgRt
 		}
 	}
 
+	rt_avg := 0
+	if rt_workers > 0 {
+		rt_avg = int(rt / rt_workers)
+	}
 	fields := map[string]interface{}{
 		"workers":         workers,
 		"active-workers":  active_workers,
@@ -132,7 +140,7 @@ func (u *Uwsgi) gatherSummary(acc telegraf.Accumulator, s *StatsServer) {
 		"exceptions":      exceptions,
 		"memory-resident": memory_resident,
 		"memory-vsize":    memory_vsize,
-		"request-time":    int(rt / active_workers),
+		"request-time":    rt_avg,
 	}
 	tags := map[string]string{}
 
