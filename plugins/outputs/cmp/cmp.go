@@ -76,11 +76,11 @@ var translateMap = map[string]Translation{
 	//     "system-uptime": {
 	//         Name: "uptime",
 	//     },
-	"docker_cpu-usage.percent": {
-		Name: "docker-cpu-usage.system",
+	"docker_container_cpu-usage.percent": {
+		Name: "docker-cpu-usage",
 		Unit: "percent",
 	},
-	"docker_mem-usage.percent": {
+	"docker_container_mem-usage.percent": {
 		Name: "docker-memory-usage",
 		Unit: "percent",
 	},
@@ -491,7 +491,7 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		suffix := ""
 		cpu := m.Tags()["cpu"]
 		path := m.Tags()["path"]
-		container_name := m.Tags()["cont_name"]
+		container_name := m.Tags()["com.docker.compose.service"]
 
 		if len(cpu) > 0 && cpu != "cpu-total" {
 			suffix = cpu[3:]
