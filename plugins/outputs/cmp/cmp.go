@@ -359,7 +359,7 @@ var translateMap = map[string]Translation{
 		Unit: "requests",
 	},
 	"nginx-handled": {
-		Name: "nginx-handled",
+		Name: "nginx-handled.cntr",
 		Unit: "connections",
 	},
 	"nginx-active": {
@@ -367,11 +367,11 @@ var translateMap = map[string]Translation{
 		Unit: "connections",
 	},
 	"nginx-accepts": {
-		Name: "nginx-accepts",
+		Name: "nginx-accepts.cntr",
 		Unit: "connections",
 	},
 	"nginx-requests": {
-		Name: "nginx-requests",
+		Name: "nginx-requests.cntr",
 		Unit: "requests",
 	},
 	"uwsgi_summary-memory-vsize": {
