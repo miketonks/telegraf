@@ -106,3 +106,51 @@ func TestRunError(t *testing.T) {
 
 	assert.Error(t, err)
 }
+
+func TestRandomSleep(t *testing.T) {
+	// test that zero max returns immediately
+	s := time.Now()
+	RandomSleep(time.Duration(0), make(chan struct{}))
+	elapsed := time.Since(s)
+	assert.True(t, elapsed < time.Millisecond)
+
+	// test that max sleep is respected
+	s = time.Now()
+	RandomSleep(time.Millisecond*50, make(chan struct{}))
+	elapsed = time.Since(s)
+	assert.True(t, elapsed < time.Millisecond*100)
+
+	// test that shutdown is respected
+	s = time.Now()
+	shutdown := make(chan struct{})
+	go func() {
+		time.Sleep(time.Millisecond * 100)
+		close(shutdown)
+	}()
+	RandomSleep(time.Second, shutdown)
+	elapsed = time.Since(s)
+	assert.True(t, elapsed < time.Millisecond*150)
+}
+
+func TestDuration(t *testing.T) {
+	var d Duration
+
+	d.UnmarshalTOML([]byte(`"1s"`))
+	assert.Equal(t, time.Second, d.Duration)
+
+	d = Duration{}
+	d.UnmarshalTOML([]byte(`1s`))
+	assert.Equal(t, time.Second, d.Duration)
+
+	d = Duration{}
+	d.UnmarshalTOML([]byte(`'1s'`))
+	assert.Equal(t, time.Second, d.Duration)
+
+	d = Duration{}
+	d.UnmarshalTOML([]byte(`10`))
+	assert.Equal(t, 10*time.Second, d.Duration)
+
+	d = Duration{}
+	d.UnmarshalTOML([]byte(`1.5`))
+	assert.Equal(t, time.Second, d.Duration)
+}

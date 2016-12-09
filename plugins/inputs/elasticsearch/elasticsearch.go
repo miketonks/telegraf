@@ -2,14 +2,14 @@ package elasticsearch
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 	"sync"
 	"time"
 
 	"github.com/influxdata/telegraf"
+	"github.com/influxdata/telegraf/internal"
+	"github.com/influxdata/telegraf/internal/errchan"
 	"github.com/influxdata/telegraf/plugins/inputs"
 	jsonparser "github.com/influxdata/telegraf/plugins/parsers/json"
 )
@@ -60,7 +60,12 @@ type indexHealth struct {
 
 const sampleConfig = `
   ## specify a list of one or more Elasticsearch servers
+  # you can add username and password to your url to use basic authentication:
+  # servers = ["http://user:pass@localhost:9200"]
   servers = ["http://localhost:9200"]
+
+  ## Timeout for HTTP requests to the elastic search server(s)
+  http_timeout = "5s"
 
   ## set local to false when you want to read the indices stats from all nodes
   ## within the cluster
@@ -68,25 +73,34 @@ const sampleConfig = `
 
   ## set cluster_health to true when you want to also obtain cluster level stats
   cluster_health = false
+
+  ## Optional SSL Config
+  # ssl_ca = "/etc/telegraf/ca.pem"
+  # ssl_cert = "/etc/telegraf/cert.pem"
+  # ssl_key = "/etc/telegraf/key.pem"
+  ## Use SSL but skip chain & host verification
+  # insecure_skip_verify = false
 `
 
 // Elasticsearch is a plugin to read stats from one or many Elasticsearch
 // servers.
 type Elasticsearch struct {
-	Local         bool
-	Servers       []string
-	ClusterHealth bool
-	client        *http.Client
+	Local              bool
+	Servers            []string
+	HttpTimeout        internal.Duration
+	ClusterHealth      bool
+	SSLCA              string `toml:"ssl_ca"`   // Path to CA file
+	SSLCert            string `toml:"ssl_cert"` // Path to host cert file
+	SSLKey             string `toml:"ssl_key"`  // Path to cert key file
+	InsecureSkipVerify bool   // Use SSL but skip chain & host verification
+	client             *http.Client
 }
 
 // NewElasticsearch return a new instance of Elasticsearch
 func NewElasticsearch() *Elasticsearch {
-	tr := &http.Transport{ResponseHeaderTimeout: time.Duration(3 * time.Second)}
-	client := &http.Client{
-		Transport: tr,
-		Timeout:   time.Duration(4 * time.Second),
+	return &Elasticsearch{
+		HttpTimeout: internal.Duration{Duration: time.Second * 5},
 	}
-	return &Elasticsearch{client: client}
 }
 
 // SampleConfig returns sample configuration for this plugin.
@@ -102,7 +116,16 @@ func (e *Elasticsearch) Description() string {
 // Gather reads the stats from Elasticsearch and writes it to the
 // Accumulator.
 func (e *Elasticsearch) Gather(acc telegraf.Accumulator) error {
-	errChan := make(chan error, len(e.Servers))
+	if e.client == nil {
+		client, err := e.createHttpClient()
+
+		if err != nil {
+			return err
+		}
+		e.client = client
+	}
+
+	errChan := errchan.New(len(e.Servers))
 	var wg sync.WaitGroup
 	wg.Add(len(e.Servers))
 
@@ -116,7 +139,7 @@ func (e *Elasticsearch) Gather(acc telegraf.Accumulator) error {
 				url = s + statsPath
 			}
 			if err := e.gatherNodeStats(url, acc); err != nil {
-				errChan <- err
+				errChan.C <- err
 				return
 			}
 			if e.ClusterHealth {
@@ -126,17 +149,24 @@ func (e *Elasticsearch) Gather(acc telegraf.Accumulator) error {
 	}
 
 	wg.Wait()
-	close(errChan)
-	// Get all errors and return them as one giant error
-	errStrings := []string{}
-	for err := range errChan {
-		errStrings = append(errStrings, err.Error())
+	return errChan.Error()
+}
+
+func (e *Elasticsearch) createHttpClient() (*http.Client, error) {
+	tlsCfg, err := internal.GetTLSConfig(e.SSLCert, e.SSLKey, e.SSLCA, e.InsecureSkipVerify)
+	if err != nil {
+		return nil, err
+	}
+	tr := &http.Transport{
+		ResponseHeaderTimeout: e.HttpTimeout.Duration,
+		TLSClientConfig:       tlsCfg,
+	}
+	client := &http.Client{
+		Transport: tr,
+		Timeout:   e.HttpTimeout.Duration,
 	}
 
-	if len(errStrings) == 0 {
-		return nil
-	}
-	return errors.New(strings.Join(errStrings, "\n"))
+	return client, nil
 }
 
 func (e *Elasticsearch) gatherNodeStats(url string, acc telegraf.Accumulator) error {

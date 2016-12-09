@@ -147,6 +147,62 @@ Your Telegraf metrics would get tagged with "my_tag_1"
 exec_mycollector,my_tag_1=foo a=5,b_c=6
 ```
 
+If the JSON data is an array, then each element of the array is parsed with the configured settings.
+Each resulting metric will be output with the same timestamp.
+
+For example, if the following configuration:
+
+```toml
+[[inputs.exec]]
+  ## Commands array
+  commands = ["/usr/bin/mycollector --foo=bar"]
+
+  ## measurement name suffix (for separating different commands)
+  name_suffix = "_mycollector"
+
+  ## Data format to consume.
+  ## Each data format has it's own unique set of configuration options, read
+  ## more about them here:
+  ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md
+  data_format = "json"
+
+  ## List of tag names to extract from top-level of JSON server response
+  tag_keys = [
+    "my_tag_1",
+    "my_tag_2"
+  ]
+```
+
+with this JSON output from a command:
+
+```json
+[
+    {
+        "a": 5,
+        "b": {
+            "c": 6
+        },
+        "my_tag_1": "foo",
+        "my_tag_2": "baz"
+    },
+    {
+        "a": 7,
+        "b": {
+            "c": 8
+        },
+        "my_tag_1": "bar",
+        "my_tag_2": "baz"
+    }
+]
+```
+
+Your Telegraf metrics would get tagged with "my_tag_1" and "my_tag_2"
+
+```
+exec_mycollector,my_tag_1=foo,my_tag_2=baz a=5,b_c=6
+exec_mycollector,my_tag_1=bar,my_tag_2=baz a=7,b_c=8
+```
+
 # Value:
 
 The "value" data format translates single values into Telegraf metrics. This
@@ -186,49 +242,69 @@ name of the plugin.
 # Graphite:
 
 The Graphite data format translates graphite _dot_ buckets directly into
-telegraf measurement names, with a single value field, and without any tags. For
-more advanced options, Telegraf supports specifying "templates" to translate
+telegraf measurement names, with a single value field, and without any tags.
+By default, the separator is left as ".", but this can be changed using the
+"separator" argument. For more advanced options,
+Telegraf supports specifying "templates" to translate
 graphite buckets into Telegraf metrics.
 
-#### Separator:
-
-You can specify a separator to use for the parsed metrics.
-By default, it will leave the metrics with a "." separator.
-Setting `separator = "_"` will translate:
+Templates are of the form:
 
 ```
-cpu.usage.idle 99
-=> cpu_usage_idle value=99
+"host.mytag.mytag.measurement.measurement.field*"
 ```
 
-#### Measurement/Tag Templates:
+Where the following keywords exist:
+
+1. `measurement`: specifies that this section of the graphite bucket corresponds
+to the measurement name. This can be specified multiple times.
+2. `field`: specifies that this section of the graphite bucket corresponds
+to the field name. This can be specified multiple times.
+3. `measurement*`: specifies that all remaining elements of the graphite bucket
+correspond to the measurement name.
+4. `field*`: specifies that all remaining elements of the graphite bucket
+correspond to the field name.
+
+Any part of the template that is not a keyword is treated as a tag key. This
+can also be specified multiple times.
+
+NOTE: `field*` cannot be used in conjunction with `measurement*`!
+
+#### Measurement & Tag Templates:
 
 The most basic template is to specify a single transformation to apply to all
-incoming metrics. _measurement_ is a special keyword that tells Telegraf which
-parts of the graphite bucket to combine into the measurement name. It can have a
-trailing `*` to indicate that the remainder of the metric should be used.
-Other words are considered tag keys. So the following template:
+incoming metrics. So the following template:
 
 ```toml
 templates = [
-    "region.measurement*"
+    "region.region.measurement*"
 ]
 ```
 
 would result in the following Graphite -> Telegraf transformation.
 
 ```
-us-west.cpu.load 100
-=> cpu.load,region=us-west value=100
+us.west.cpu.load 100
+=> cpu.load,region=us.west value=100
+```
+
+Multiple templates can also be specified, but these should be differentiated
+using _filters_ (see below for more details)
+
+```toml
+templates = [
+    "*.*.* region.region.measurement", # <- all 3-part measurements will match this one.
+    "*.*.*.* region.region.host.measurement", # <- all 4-part measurements will match this one.
+]
 ```
 
 #### Field Templates:
 
-There is also a _field_ keyword, which can only be specified once.
 The field keyword tells Telegraf to give the metric that field name.
 So the following template:
 
 ```toml
+separator = "_"
 templates = [
     "measurement.measurement.field.field.region"
 ]
@@ -237,24 +313,26 @@ templates = [
 would result in the following Graphite -> Telegraf transformation.
 
 ```
-cpu.usage.idle.percent.us-west 100
-=> cpu_usage,region=us-west idle_percent=100
+cpu.usage.idle.percent.eu-east 100
+=> cpu_usage,region=eu-east idle_percent=100
 ```
 
-The field key can also be derived from the second "half" of the input metric-name by specifying ```field*```:
+The field key can also be derived from all remaining elements of the graphite
+bucket by specifying `field*`:
+
 ```toml
+separator = "_"
 templates = [
     "measurement.measurement.region.field*"
 ]
 ```
 
-would result in the following Graphite -> Telegraf transformation.
+which would result in the following Graphite -> Telegraf transformation.
 
 ```
-cpu.usage.us-west.idle.percentage 100
-=> cpu_usage,region=us-west idle_percentage=100
+cpu.usage.eu-east.idle.percentage 100
+=> cpu_usage,region=eu-east idle_percentage=100
 ```
-(This cannot be used in conjunction with "measurement*"!)
 
 #### Filter Templates:
 
@@ -271,8 +349,8 @@ templates = [
 which would result in the following transformation:
 
 ```
-cpu.load.us-west 100
-=> cpu_load,region=us-west value=100
+cpu.load.eu-east 100
+=> cpu_load,region=eu-east value=100
 
 mem.cached.localhost 256
 => mem_cached,host=localhost value=256
@@ -294,8 +372,8 @@ templates = [
 would result in the following Graphite -> Telegraf transformation.
 
 ```
-cpu.usage.idle.us-west 100
-=> cpu_usage,region=us-west,datacenter=1a idle=100
+cpu.usage.idle.eu-east 100
+=> cpu_usage,region=eu-east,datacenter=1a idle=100
 ```
 
 There are many more options available,
@@ -326,12 +404,12 @@ There are many more options available,
   ## similar to the line protocol format. There can be only one default template.
   ## Templates support below format:
   ## 1. filter + template
-  ## 2. filter + template + extra tag
+  ## 2. filter + template + extra tag(s)
   ## 3. filter + template with field key
   ## 4. default template
   templates = [
     "*.app env.service.resource.measurement",
-    "stats.* .host.measurement* region=us-west,agent=sensu",
+    "stats.* .host.measurement* region=eu-east,agent=sensu",
     "stats2.* .host.measurement.field",
     "measurement*"
   ]

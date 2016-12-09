@@ -14,7 +14,7 @@ import (
 
 type PS interface {
 	CPUTimes(perCPU, totalCPU bool) ([]cpu.TimesStat, error)
-	DiskUsage(mountPointFilter []string, fstypeExclude []string) ([]*disk.UsageStat, error)
+	DiskUsage(mountPointFilter []string, fstypeExclude []string) ([]*disk.UsageStat, []*disk.PartitionStat, error)
 	NetIO() ([]net.IOCountersStat, error)
 	NetProto() ([]net.ProtoCountersStat, error)
 	DiskIO() (map[string]disk.IOCountersStat, error)
@@ -26,7 +26,7 @@ type PS interface {
 func add(acc telegraf.Accumulator,
 	name string, val float64, tags map[string]string) {
 	if val >= 0 {
-		acc.Add(name, val, tags)
+		acc.AddFields(name, map[string]interface{}{"value": val}, tags)
 	}
 }
 
@@ -54,10 +54,10 @@ func (s *systemPS) CPUTimes(perCPU, totalCPU bool) ([]cpu.TimesStat, error) {
 func (s *systemPS) DiskUsage(
 	mountPointFilter []string,
 	fstypeExclude []string,
-) ([]*disk.UsageStat, error) {
+) ([]*disk.UsageStat, []*disk.PartitionStat, error) {
 	parts, err := disk.Partitions(true)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Make a "set" out of the filter slice
@@ -71,6 +71,7 @@ func (s *systemPS) DiskUsage(
 	}
 
 	var usage []*disk.UsageStat
+	var partitions []*disk.PartitionStat
 
 	for _, p := range parts {
 		if len(mountPointFilter) > 0 {
@@ -84,10 +85,11 @@ func (s *systemPS) DiskUsage(
 		mountpoint := os.Getenv("HOST_MOUNT_PREFIX") + p.Mountpoint
 		if _, err := os.Stat(mountpoint); err == nil {
 			du, err := disk.Usage(mountpoint)
-			du.Path = p.Mountpoint
 			if err != nil {
-				return nil, err
+				return nil, nil, err
 			}
+			du.Path = p.Mountpoint
+
 			// If the mount point is a member of the exclude set,
 			// don't gather info on it.
 			_, ok := fstypeExcludeSet[p.Fstype]
@@ -96,10 +98,11 @@ func (s *systemPS) DiskUsage(
 			}
 			du.Fstype = p.Fstype
 			usage = append(usage, du)
+			partitions = append(partitions, &p)
 		}
 	}
 
-	return usage, nil
+	return usage, partitions, nil
 }
 
 func (s *systemPS) NetProto() ([]net.ProtoCountersStat, error) {

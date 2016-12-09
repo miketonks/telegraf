@@ -9,7 +9,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path"
+	"path/filepath"
 	"runtime"
 	"strconv"
 
@@ -19,7 +19,7 @@ import (
 
 type Processes struct {
 	execPS       func() ([]byte, error)
-	readProcFile func(statFile string) ([]byte, error)
+	readProcFile func(filename string) ([]byte, error)
 
 	forcePS   bool
 	forceProc bool
@@ -57,7 +57,7 @@ func (p *Processes) Gather(acc telegraf.Accumulator) error {
 		}
 	}
 
-	acc.AddFields("processes", fields, nil)
+	acc.AddGauge("processes", fields, nil)
 	return nil
 }
 
@@ -118,7 +118,7 @@ func (p *Processes) gatherFromPS(fields map[string]interface{}) error {
 		case '?':
 			fields["unknown"] = fields["unknown"].(int64) + int64(1)
 		default:
-			log.Printf("processes: Unknown state [ %s ] from ps",
+			log.Printf("I! processes: Unknown state [ %s ] from ps",
 				string(status[0]))
 		}
 		fields["total"] = fields["total"].(int64) + int64(1)
@@ -128,18 +128,15 @@ func (p *Processes) gatherFromPS(fields map[string]interface{}) error {
 
 // get process states from /proc/(pid)/stat files
 func (p *Processes) gatherFromProc(fields map[string]interface{}) error {
-	files, err := ioutil.ReadDir("/proc")
+	filenames, err := filepath.Glob("/proc/[0-9]*/stat")
 	if err != nil {
 		return err
 	}
 
-	for _, file := range files {
-		if !file.IsDir() {
-			continue
-		}
+	for _, filename := range filenames {
+		_, err := os.Stat(filename)
 
-		statFile := path.Join("/proc", file.Name(), "stat")
-		data, err := p.readProcFile(statFile)
+		data, err := p.readProcFile(filename)
 		if err != nil {
 			return err
 		}
@@ -156,7 +153,7 @@ func (p *Processes) gatherFromProc(fields map[string]interface{}) error {
 
 		stats := bytes.Fields(data)
 		if len(stats) < 3 {
-			return fmt.Errorf("Something is terribly wrong with %s", statFile)
+			return fmt.Errorf("Something is terribly wrong with %s", filename)
 		}
 		switch stats[0][0] {
 		case 'R':
@@ -172,14 +169,14 @@ func (p *Processes) gatherFromProc(fields map[string]interface{}) error {
 		case 'W':
 			fields["paging"] = fields["paging"].(int64) + int64(1)
 		default:
-			log.Printf("processes: Unknown state [ %s ] in file %s",
-				string(stats[0][0]), statFile)
+			log.Printf("I! processes: Unknown state [ %s ] in file %s",
+				string(stats[0][0]), filename)
 		}
 		fields["total"] = fields["total"].(int64) + int64(1)
 
 		threads, err := strconv.Atoi(string(stats[17]))
 		if err != nil {
-			log.Printf("processes: Error parsing thread count: %s", err)
+			log.Printf("I! processes: Error parsing thread count: %s", err)
 			continue
 		}
 		fields["total_threads"] = fields["total_threads"].(int64) + int64(threads)
@@ -187,15 +184,12 @@ func (p *Processes) gatherFromProc(fields map[string]interface{}) error {
 	return nil
 }
 
-func readProcFile(statFile string) ([]byte, error) {
-	if _, err := os.Stat(statFile); os.IsNotExist(err) {
-		return nil, nil
-	} else if err != nil {
-		return nil, err
-	}
-
-	data, err := ioutil.ReadFile(statFile)
+func readProcFile(filename string) ([]byte, error) {
+	data, err := ioutil.ReadFile(filename)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
 		return nil, err
 	}
 

@@ -20,7 +20,8 @@ var (
 )
 
 type Chrony struct {
-	path string
+	DNSLookup bool `toml:"dns_lookup"`
+	path      string
 }
 
 func (*Chrony) Description() string {
@@ -28,14 +29,24 @@ func (*Chrony) Description() string {
 }
 
 func (*Chrony) SampleConfig() string {
-	return ""
+	return `
+  ## If true, chronyc tries to perform a DNS lookup for the time server.
+  # dns_lookup = false
+  `
 }
 
 func (c *Chrony) Gather(acc telegraf.Accumulator) error {
 	if len(c.path) == 0 {
 		return errors.New("chronyc not found: verify that chrony is installed and that chronyc is in your PATH")
 	}
-	cmd := execCommand(c.path, "tracking")
+
+	flags := []string{}
+	if !c.DNSLookup {
+		flags = append(flags, "-n")
+	}
+	flags = append(flags, "tracking")
+
+	cmd := execCommand(c.path, flags...)
 	out, err := internal.CombinedOutputTimeout(cmd, time.Second*5)
 	if err != nil {
 		return fmt.Errorf("failed to run command %s: %s - %s", strings.Join(cmd.Args, " "), err, string(out))
@@ -92,9 +103,13 @@ func processChronycOutput(out string) (map[string]interface{}, map[string]string
 			tags["stratum"] = valueFields[0]
 			continue
 		}
+		if strings.Contains(strings.ToLower(name), "reference_id") {
+			tags["reference_id"] = valueFields[0]
+			continue
+		}
 		value, err := strconv.ParseFloat(valueFields[0], 64)
 		if err != nil {
-			tags[name] = strings.ToLower(valueFields[0])
+			tags[name] = strings.ToLower(strings.Join(valueFields, " "))
 			continue
 		}
 		if strings.Contains(stats[1], "slow") {
