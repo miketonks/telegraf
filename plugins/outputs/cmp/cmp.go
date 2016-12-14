@@ -73,6 +73,14 @@ var translateMap = map[string]Translation{
 		Name: "disk-usage",
 		Unit: "percent",
 	},
+	"diskio-iops.in.progress": {
+		Name: "disk-iops-in-progress",
+		Unit: "count",
+	},
+	"diskio-io.time": {
+		Name: "disk-io-time",
+		Unit: "count",
+	},
 	//     "system-uptime": {
 	//         Name: "uptime",
 	//     },
@@ -191,6 +199,151 @@ var translateMap = map[string]Translation{
 		Name:       "es-index-time.delete",
 		Unit:       "s",
 		Conversion: divide_by(1000.0),
+	},
+	"haproxy-active.servers": {
+	  Name: "haproxy-active-servers",
+	  Unit: "",
+	},
+	"haproxy-backup.servers": {
+	  Name: "haproxy-backup-servers",
+	  Unit: "",
+	},
+	"haproxy-bin": {
+	  Name: "haproxy-bytes-in",
+	  Unit: "B",
+	},
+	"haproxy-bout": {
+	  Name: "haproxy-bytes-out",
+	  Unit: "B",
+	},
+	"haproxy-check.duration": {
+	  Name: "haproxy-check-duration",
+	  Unit: "s",
+		Conversion: divide_by(1000.0),
+	},
+	"haproxy-cli.abort": {
+	  Name: "haproxy-client-aborts",
+	  Unit: "count",
+	},
+	"haproxy-ctime": {
+	  Name: "haproxy-connection-time",
+	  Unit: "s",
+		Conversion: divide_by(1000.0),
+	},
+	"haproxy-downtime": {
+	  Name: "haproxy-downtime",
+	  Unit: "s",
+	},
+	"haproxy-dreq": {
+	  Name: "haproxy-denied-requests",
+	  Unit: "count",
+	},
+	"haproxy-dresp": {
+	  Name: "haproxy-denied-responses",
+	  Unit: "count",
+	},
+	"haproxy-econ": {
+	  Name: "haproxy-error-connections",
+	  Unit: "count",
+	},
+	"haproxy-ereq": {
+	  Name: "haproxy-error-requests",
+	  Unit: "count",
+	},
+	"haproxy-eresp": {
+	  Name: "haproxy-error-responses",
+	  Unit: "count",
+	},
+	"haproxy-http.response.1xx": {
+	  Name: "haproxy-http-1xx",
+	  Unit: "responses",
+	},
+	"haproxy-http.response.2xx": {
+	  Name: "haproxy-http-2xx",
+	  Unit: "responses",
+	},
+	"haproxy-http.response.3xx": {
+	  Name: "haproxy-http-3xx",
+	  Unit: "responses",
+	},
+	"haproxy-http.response.4xx": {
+	  Name: "haproxy-http-4xx",
+	  Unit: "responses",
+	},
+	"haproxy-http.response.5xx": {
+	  Name: "haproxy-http-5xx",
+	  Unit: "responses",
+	},
+	"haproxy-lbtot": {
+	  Name: "haproxy-lbtot",
+	  Unit: "count",
+	},
+	"haproxy-qcur": {
+	  Name: "haproxy-queue-current",
+	  Unit: "requests",
+	},
+	"haproxy-qmax": {
+	  Name: "haproxy-queue-max",
+	  Unit: "requests",
+	},
+	"haproxy-qtime": {
+	  Name: "haproxy-queue-time",
+	  Unit: "s",
+		Conversion: divide_by(1000.0),
+	},
+	"haproxy-rate": {
+	  Name: "haproxy-rate",
+	  Unit: "sessions/s",
+	},
+	"haproxy-rate.max": {
+	  Name: "haproxy-rate-max",
+	  Unit: "sessions/s",
+	},
+	"haproxy-req.rate": {
+	  Name: "haproxy-request-rate",
+	  Unit: "requests/s",
+	},
+	"haproxy-req.rate.max": {
+	  Name: "haproxy-request-rate-max",
+	  Unit: "requests/s",
+	},
+	"haproxy-req.tot": {
+	  Name: "haproxy-requests-total",
+	  Unit: "requests",
+	},
+	"haproxy-rtime": {
+	  Name: "haproxy-response-time",
+	  Unit: "s",
+		Conversion: divide_by(1000.0),
+	},
+	"haproxy-scur": {
+	  Name: "haproxy-sessions-current",
+	  Unit: "sessions",
+	},
+	"haproxy-smax": {
+	  Name: "haproxy-sessions-max",
+	  Unit: "sessions",
+	},
+	"haproxy-srv.abort": {
+	  Name: "haproxy-server-aborts",
+	  Unit: "count",
+	},
+	"haproxy-stot": {
+	  Name: "haproxy-sessions-total",
+	  Unit: "sessions",
+	},
+	"haproxy-ttime": {
+	  Name: "haproxy-total-time",
+	  Unit: "s",
+		Conversion: divide_by(1000.0),
+	},
+	"haproxy-wredis": {
+	  Name: "haproxy-warnings-redistributed",
+	  Unit: "count",
+	},
+	"haproxy-wretr": {
+	  Name: "haproxy-warnings-retried",
+	  Unit: "count",
 	},
 	"mongodb-open.connections": {
 		Name: "mongodb-open-connections",
@@ -491,7 +644,9 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		suffix := ""
 		cpu := m.Tags()["cpu"]
 		path := m.Tags()["path"]
+		haproxy_service := m.Tags()["proxy"] + "_" + m.Tags()["sv"]
 		container_name := m.Tags()["com.docker.compose.service"]
+		disk_name := m.Tags()["name"]
 
 		if len(cpu) > 0 && cpu != "cpu-total" {
 			suffix = cpu[3:]
@@ -499,6 +654,10 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 			suffix = path
 		} else if len(container_name) > 0 {
 			suffix = container_name
+		} else if m.Name() == "haproxy" && len(haproxy_service) > 0 {
+			suffix = haproxy_service
+		} else if m.Name() == "diskio" && len(disk_name) > 0 {
+			suffix = disk_name
 		}
 
 		timestamp := m.Time().UTC().Format("2006-01-02T15:04:05.999999Z")
