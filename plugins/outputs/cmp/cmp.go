@@ -80,6 +80,25 @@ var translateMap = map[string]Translation{
 	"diskio-io.time": {
 		Name: "disk-io-time",
 		Unit: "count",
+		Conversion: divide_by(1000.0),
+	},
+	"diskio-reads": {
+		Name: "disk-read-ops-total",
+		Unit: "count",
+	},
+	"diskio-writes": {
+		Name: "disk-write-ops-total",
+		Unit: "count",
+	},
+	"diskio-read.time": {
+		Name: "disk-read-time-total",
+		Unit: "s",
+		Conversion: divide_by(1000.0),
+	},
+	"diskio-write.time": {
+		Name: "disk-write-time-total",
+		Unit: "s",
+		Conversion: divide_by(1000.0),
 	},
 	//     "system-uptime": {
 	//         Name: "uptime",
