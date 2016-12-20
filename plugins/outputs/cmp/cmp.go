@@ -74,7 +74,7 @@ var translateMap = map[string]Translation{
 		Unit: "percent",
 	},
 	"diskio-iops.in.progress": {
-		Name: "disk-iops-in-progress",
+		Name: "disk-queued-iops",
 		Unit: "count",
 	},
 	"diskio-io.time": {
