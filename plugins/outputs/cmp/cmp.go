@@ -590,9 +590,9 @@ func divide_by(divisor float64) func(value interface{}) interface{} {
 	return func(value interface{}) interface{} {
 		switch v := value.(type) {
 		case int64:
-			return float64(v) / 1000.0
+			return float64(v) / divisor
 		case float64:
-			return v / 1000.0
+			return v / divisor
 		default:
 			return 0.0
 		}
