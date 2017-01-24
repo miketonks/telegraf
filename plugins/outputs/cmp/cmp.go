@@ -438,6 +438,76 @@ var translateMap = map[string]Translation{
 		Name: "mongodb-cache-used",
 		Unit: "percent",
 	},
+	"postgresql-numbackends": {
+	  Name: "postgres-num-backends",
+	  Unit: "count",
+	},
+	"postgresql-xact.commit": {
+	  Name: "postgres-xact-commit.cntr",
+	  Unit: "count/s",
+	},
+	"postgresql-xact.rollback": {
+	  Name: "postgres-xact-rollback.cntr",
+	  Unit: "count/s",
+	},
+	"postgresql-blks.read": {
+	  Name: "postgres-blocks-read.cntr",
+	  Unit: "count/s",
+	},
+	"postgresql-blks.hit": {
+	  Name: "postgres-blocks-hit.cntr",
+	  Unit: "count/s",
+	},
+	"postgresql-tup.returned": {
+	  Name: "postgres-tuples-returned.cntr",
+	  Unit: "count/s",
+	},
+	"postgresql-tup.fetched": {
+	  Name: "postgres-tuples-fetched.cntr",
+	  Unit: "count/s",
+	},
+	"postgresql-tup.inserted": {
+	  Name: "postgres-tuples-inserted.cntr",
+	  Unit: "count/s",
+	},
+	"postgresql-tup.updated": {
+	  Name: "postgres-tuples-updated.cntr",
+	  Unit: "count/s",
+	},
+	"postgresql-tup.deleted": {
+	  Name: "postgres-tuples-deleted.cntr",
+	  Unit: "count/s",
+	},
+	"postgresql-conflicts": {
+	  Name: "postgres-conflicts.cntr",
+	  Unit: "count/s",
+	},
+	"postgresql-temp.files": {
+	  Name: "postgres-temp-files.cntr",
+	  Unit: "files/s",
+	},
+	"postgresql-temp.bytes": {
+	  Name: "postgres-temp-bytes.cntr",
+	  Unit: "B/s",
+	},
+	"postgresql-deadlocks": {
+	  Name: "postgres-deadlocks.cntr",
+	  Unit: "count/s",
+	},
+	"postgresql-blk.read.time": {
+	  Name: "postgres-block-read-time.cntr",
+	  Unit: "percent",
+		// total milliseconds in, so divide by 10 to get
+		// 100 x seconds, then differentate (.cntr) to get percentage
+		Conversion: divide_by(10.0),
+	},
+	"postgresql-blk.write.time": {
+	  Name: "postgres-blk-write-time.cntr",
+	  Unit: "percent",
+		// total milliseconds in, so divide by 10 to get
+		// 100 x seconds, then differentate (.cntr) to get percentage 
+		Conversion: divide_by(10.0),
+	},
 	"Logins/sec | General Statistics-value": {
 		Name: "mssql-logins",
 		Unit: "count/s",
