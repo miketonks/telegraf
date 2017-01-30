@@ -736,6 +736,7 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		haproxy_service := m.Tags()["proxy"] + "_" + m.Tags()["sv"]
 		container_name := m.Tags()["com.docker.compose.service"]
 		disk_name := m.Tags()["name"]
+		db := m.Tags()["db"]
 
 		if len(cpu) > 0 && cpu != "cpu-total" {
 			suffix = cpu[3:]
@@ -747,6 +748,8 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 			suffix = haproxy_service
 		} else if m.Name() == "diskio" && len(disk_name) > 0 {
 			suffix = disk_name
+		} else if m.Name() == "postgresql" && len(db) > 0 {
+			suffix = db
 		}
 
 		timestamp := m.Time().UTC().Format("2006-01-02T15:04:05.999999Z")
@@ -756,7 +759,13 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 			if found {
 				cmp_name := translation.Name
 				if len(suffix) > 0 {
-					cmp_name += "." + suffix
+					if strings.HasSuffix(cmp_name, ".cntr") {
+						cmp_name = strings.TrimSuffix(cmp_name, ".cntr")
+						cmp_name += "." + suffix + ".cntr"
+					} else {
+						cmp_name += "." + suffix
+					}
+
 				}
 
 				conversion := translation.Conversion
