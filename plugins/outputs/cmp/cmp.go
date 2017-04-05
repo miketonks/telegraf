@@ -78,7 +78,7 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"diskio-io.time": {
-		Name: "disk-io-time",
+		Name: "disk-io-time.cntr",
 		Unit: "count",
 		Conversion: divide_by(1000.0),
 	},
