@@ -73,14 +73,11 @@ var translateMap = map[string]Translation{
 		Name: "disk-usage",
 		Unit: "percent",
 	},
-	"diskio-iops.in.progress": {
-		Name: "disk-queued-iops",
-		Unit: "count",
-	},
 	"diskio-io.time": {
-		Name: "disk-io-time.cntr",
-		Unit: "count",
-		Conversion: divide_by(1000.0),
+		Name: "disk-io-time-percent.cntr",
+		Unit: "percent",
+		// ms / 1000 for s then * 100 for percent
+		Conversion: divide_by(10.0),
 	},
 	"diskio-reads": {
 		Name: "disk-read-ops.cntr",
@@ -91,14 +88,16 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"diskio-read.time": {
-		Name: "disk-read-time.cntr",
-		Unit: "s",
-		Conversion: divide_by(1000.0),
+		Name: "disk-read-time-percent.cntr",
+		Unit: "percent",
+		// ms / 1000 for s then * 100 for percent
+		Conversion: divide_by(10.0),
 	},
 	"diskio-write.time": {
-		Name: "disk-write-time.cntr",
-		Unit: "s",
-		Conversion: divide_by(1000.0),
+		Name: "disk-write-time-percent.cntr",
+		Unit: "percent",
+		// ms / 1000 for s then * 100 for percent
+		Conversion: divide_by(10.0),
 	},
 	//     "system-uptime": {
 	//         Name: "uptime",
