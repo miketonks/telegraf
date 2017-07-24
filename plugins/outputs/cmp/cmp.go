@@ -48,11 +48,11 @@ var translateMap = map[string]Translation{
 		Conversion: subtract_from_100_percent,
 	},
 	"cpu-usage.user": {
-		Name: "cpu-usage.user",
+		Name: "cpu-usage-user",
 		Unit: "percent",
 	},
 	"cpu-usage.system": {
-		Name: "cpu-usage.system",
+		Name: "cpu-usage-system",
 		Unit: "percent",
 	},
 	"mem-available.percent": {
