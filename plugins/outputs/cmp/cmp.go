@@ -163,13 +163,21 @@ var translateMap = map[string]Translation{
 		Name: "es-search-requests.fetch.cntr",
 		Unit: "requests",
 	},
+	"elasticsearch_indices-search.query.current": {
+		Name: "es-current-search-requests.query",
+		Unit: "requests",
+	},
+	"elasticsearch_indices-search.fetch.current": {
+		Name: "es-current-search-requests.fetch",
+		Unit: "requests",
+	},
 	"elasticsearch_indices-search.query.time.in.millis": {
-		Name:       "es-search-time.query",
+		Name:       "es-search-time.query.cntr",
 		Unit:       "s",
 		Conversion: divide_by(1000.0),
 	},
 	"elasticsearch_indices-search.fetch.time.in.millis": {
-		Name:       "es-search-time.fetch",
+		Name:       "es-search-time.fetch.cntr",
 		Unit:       "s",
 		Conversion: divide_by(1000.0),
 	},
@@ -204,6 +212,10 @@ var translateMap = map[string]Translation{
 		Name: "es-index-requests.index.cntr",
 		Unit: "requests",
 	},
+	"elasticsearch_indices-indexing.index.current": {
+		Name: "es-current-index-requests",
+		Unit: "requests",
+	},
 	"elasticsearch_indices-indexing.delete.total": {
 		Name: "es-index-requests.delete.cntr",
 		Unit: "requests",
@@ -216,6 +228,11 @@ var translateMap = map[string]Translation{
 	"elasticsearch_indices-indexing.delete.time.in.millis": {
 		Name:       "es-index-time.delete",
 		Unit:       "s",
+		Conversion: divide_by(1000.0),
+	},
+	"elasticsearch_indices-flush.total.time.in.millis": {
+		Name:       "es-index-time.flush.cntr",
+		Unit:       "requests",
 		Conversion: divide_by(1000.0),
 	},
 	"haproxy-active.servers": {
@@ -235,8 +252,8 @@ var translateMap = map[string]Translation{
 		Unit: "B",
 	},
 	"haproxy-check.duration": {
-		Name: "haproxy-check-duration",
-		Unit: "s",
+		Name:       "haproxy-check-duration",
+		Unit:       "s",
 		Conversion: divide_by(1000.0),
 	},
 	"haproxy-cli.abort": {
@@ -244,8 +261,8 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"haproxy-ctime": {
-		Name: "haproxy-connection-time",
-		Unit: "s",
+		Name:       "haproxy-connection-time",
+		Unit:       "s",
 		Conversion: divide_by(1000.0),
 	},
 	"haproxy-downtime": {
@@ -305,8 +322,8 @@ var translateMap = map[string]Translation{
 		Unit: "requests",
 	},
 	"haproxy-qtime": {
-		Name: "haproxy-queue-time",
-		Unit: "s",
+		Name:       "haproxy-queue-time",
+		Unit:       "s",
 		Conversion: divide_by(1000.0),
 	},
 	"haproxy-rate": {
@@ -330,8 +347,8 @@ var translateMap = map[string]Translation{
 		Unit: "requests",
 	},
 	"haproxy-rtime": {
-		Name: "haproxy-response-time",
-		Unit: "s",
+		Name:       "haproxy-response-time",
+		Unit:       "s",
 		Conversion: divide_by(1000.0),
 	},
 	"haproxy-scur": {
@@ -351,8 +368,8 @@ var translateMap = map[string]Translation{
 		Unit: "sessions",
 	},
 	"haproxy-ttime": {
-		Name: "haproxy-total-time",
-		Unit: "s",
+		Name:       "haproxy-total-time",
+		Unit:       "s",
 		Conversion: divide_by(1000.0),
 	},
 	"haproxy-wredis": {
