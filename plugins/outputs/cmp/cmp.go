@@ -235,6 +235,86 @@ var translateMap = map[string]Translation{
 		Unit:       "requests",
 		Conversion: divide_by(1000.0),
 	},
+	"etcd_server_has_leader-gauge": {
+		Name: "etcd-has-leader",
+		Unit: "count",
+	},
+	"etcd_server_leader_changes_seen_total-counter": {
+		Name: "etcd-leader-changes-seen.cntr",
+		Unit: "count",
+	},
+	"etcd_server_proposals_committed_total-gauge": {
+		Name: "etcd-proposals-committed-total",
+		Unit: "count",
+	},
+	"etcd_server_proposals_applied_total-gauge": {
+		Name: "etcd-proposals-applied-total",
+		Unit: "count",
+	},
+	"etcd_server_proposals_pending-gauge": {
+		Name: "etcd-proposals-pending",
+		Unit: "count",
+	},
+	"etcd_server_proposals_failed_total-counter": {
+		Name: "etcd-proposals-failed.cntr",
+		Unit: "count",
+	},
+	"etcd_network_peer_sent_bytes_total-counter": {
+		Name: "etcd-peer-sent-bytes.cntr",
+		Unit: "B",
+	},
+	"etcd_network_peer_received_bytes_total-counter": {
+		Name: "etcd-peer-received-bytes.cntr",
+		Unit: "B",
+	},
+	"etcd_network_peer_sent_failures_total-counter": {
+		Name: "etcd-peer-sent-failures.cntr",
+		Unit: "count",
+	},
+	"etcd_network_peer_received_failures_total-counter": {
+		Name: "etcd-peer-received-failures.cntr",
+		Unit: "count",
+	},
+	"etcd_network_client_grpc_sent_bytes_total-counter": {
+		Name: "etcd-grpc-client-sent-bytes.cntr",
+		Unit: "B",
+	},
+	"etcd_network_client_grpc_received_bytes_total-counter": {
+		Name: "etcd-grpc-client-received-bytes.cntr",
+		Unit: "B",
+	},
+	"process_open_fds-gauge": {
+		Name: "etcd-open-file-descriptors",
+		Unit: "count",
+	},
+	"process_max_fds-gauge": {
+		Name: "etcd-max-file-descriptors",
+		Unit: "count",
+	},
+	"grpc_server_started_total-counter": {
+		Name: "etcd-server-started.cntr",
+		Unit: "count",
+	},
+	"etcd_debugging_mvcc_db_total_size_in_bytes-gauge": {
+		Name: "etcd-mvcc-db-size",
+		Unit: "B",
+	},
+	"etcd_debugging_mvcc_delete_total-counter": {
+		Name: "etcd-mvcc-deletes.cntr",
+		Unit: "count",
+	},
+	"etcd_debugging_mvcc_keys_total-gauge": {
+		Name: "etcd-mvcc-keys",
+		Unit: "count",
+	},
+	"etcd_debugging_server_lease_expired_total-counter": {
+		Name: "etcd-server-lease-expired.cntr",
+		Unit: "count",
+	},
+	"process_resident_memory_bytes-gauge": {
+		Name: "etcd-resident-memory",
+		Unit: "B",
+	},
 	"haproxy-active.servers": {
 		Name: "haproxy-active-servers",
 		Unit: "",
