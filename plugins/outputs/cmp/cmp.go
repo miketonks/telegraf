@@ -660,6 +660,244 @@ var translateMap = map[string]Translation{
 		Name: "uwsgi-exceptions.cntr",
 		Unit: "exceptions",
 	},
+	"vault_audit_log_request-mean": {
+		Name: "vault-audit-log-requests.cntr",
+		Unit: "count",
+	},
+	"vault_audit_log_response-mean": {
+		Name: "vault-audit-log-responses.cntr",
+		Unit: "count",
+	},
+	"vault_barrier_delete-mean": {
+		Name: "vault-barrier-deletes.cntr",
+		Unit: "count",
+	},
+	"vault_barrier_get-mean": {
+		Name: "vault-barrier-get-ops.cntr",
+		Unit: "count",
+	},
+	"vault_barrier_put-mean": {
+		Name: "vault-barrier-put-ops.cntr",
+		Unit: "count",
+	},
+	"vault_barrier_list-value": {
+		Name: "vault-barrier-list-ops.cntr",
+		Unit: "count",
+	},
+	"vault_core_check_token-mean": {
+		Name: "vault-token-checks.cntr",
+		Unit: "count",
+	},
+	"vault_core_fetch_acl_and_token-mean": {
+		Name: "vault-acl-and-token-fetches.cntr",
+		Unit: "count",
+	},
+	"vault_core_handle_request-mean": {
+		Name: "vault-requests.cntr",
+		Unit: "count",
+	},
+	"vault_core_handle_login_request-mean": {
+		Name: "vault-login-requests.cntr",
+		Unit: "count",
+	},
+	"vault_core_leadership_setup_failed-mean": {
+		Name: "vault-leadership-setup-failures.cntr",
+		Unit: "count",
+	},
+	"vault_core_leadership_lost-mean": {
+		Name: "vault-leadership-losses.cntr",
+		Unit: "count",
+	},
+	"vault_core_post_unseal-value": {
+		Name: "vault-post-unseal-ops",
+		Unit: "count",
+	},
+	"vault_core_pre_seal-value": {
+		Name: "vault-pre-seal-ops",
+		Unit: "count",
+	},
+	"vault_core_seal-with-request-value": {
+		Name: "vault-requested-seals",
+		Unit: "count",
+	},
+	"vault_core_seal-value": {
+		Name: "vault-seals",
+		Unit: "count",
+	},
+	"vault_core_seal-internal-value": {
+		Name: "vault-internal-seals",
+		Unit: "count",
+	},
+	"vault_core_step_down-mean": {
+		Name: "vault-step-downs.cntr",
+		Unit: "count",
+	},
+	"vault_core_unseal-mean": {
+		Name: "vault-unseals.cntr",
+		Unit: "count",
+	},
+	"vault_runtime_alloc_bytes-value": {
+		Name: "vault-allocated-bytes",
+		Unit: "B",
+	},
+	"vault_runtime_free_count-value": {
+		Name: "vault-free-ops",
+		Unit: "count",
+	},
+	"vault_runtime_heap_objects-value": {
+		Name: "vault-heap-objects",
+		Unit: "count",
+	},
+	"vault_runtime_malloc_count-value": {
+		Name: "vault-malloc-ops",
+		Unit: "count",
+	},
+	"vault_runtime_num_goroutines-value": {
+		Name: "vault-goroutines",
+		Unit: "count",
+	},
+	"vault_runtime_sys_bytes-value": {
+		Name: "vault-sys-bytes",
+		Unit: "B",
+	},
+	"vault_runtime_gc_pause_ns-mean": {
+		Name:       "vault-gc-pause-time-avg",
+		Unit:       "s",
+		Conversion: divide_by(1000 * 1000 * 1000),
+	},
+	"vault_runtime_total_gc_pause_ns-value": {
+		Name:       "vault-gc-pause-time.cntr",
+		Unit:       "s",
+		Conversion: divide_by(1000 * 1000 * 1000),
+	},
+	"vault_runtime_total_gc_runs-value": {
+		Name: "vault-gc-runs.cntr",
+		Unit: "count",
+	},
+	"vault_expire_num_leases-value": {
+		Name: "vault-expired-leases",
+		Unit: "count",
+	},
+	"vault_expire_revoke": {
+		Name: "vault-revoke-ops.cntr",
+		Unit: "count",
+	},
+	"vault_expire_revoke-force": {
+		Name: "vault-revokes-force.cntr",
+		Unit: "count",
+	},
+	"vault_expire_revoke-prefix": {
+		Name: "vault-revokes-by-prefix.cntr",
+		Unit: "count",
+	},
+	"vault_expire_revoke-by-token": {
+		Name: "vault-revokes-by-token.cntr",
+		Unit: "count",
+	},
+	"vault_expire_renew": {
+		Name: "vault-renew-ops.cntr",
+		Unit: "count",
+	},
+	"vault_expire_renew-token": {
+		Name: "vault-renew-token-ops",
+		Unit: "count",
+	},
+	"vault_policy_get_policy": {
+		Name: "vault-policy-get-ops.cntr",
+		Unit: "count",
+	},
+	"vault_policy_list_policies": {
+		Name: "vault-policy-list-ops.cntr",
+		Unit: "count",
+	},
+	"vault_policy_delete_policy": {
+		Name: "vault-policy-delete-ops.cntr",
+		Unit: "count",
+	},
+	"vault_policy_set_policy": {
+		Name: "vault-policy-set-ops.cntr",
+		Unit: "count",
+	},
+	"vault_token_create": {
+		Name: "vault-token-create-ops.cntr",
+		Unit: "count",
+	},
+	"vault_token_createAccessor": {
+		Name: "vault-token-identifier-ops.cntr",
+		Unit: "count",
+	},
+	"vault_token_lookup": {
+		Name: "vault-token-lookups.cntr",
+		Unit: "count",
+	},
+	"vault_token_revoke": {
+		Name: "vault-token-revokes.cntr",
+		Unit: "count",
+	},
+	"vault_token_revoke-tree": {
+		Name: "vault-token-tree-revokes.cntr",
+		Unit: "count",
+	},
+	"vault_token_store": {
+		Name: "vault-token-store-ops.cntr",
+		Unit: "count",
+	},
+	"vault_rollback_attempt_auth-token--mean": {
+		Name: "vault-rollback-attempts-auth-token",
+		Unit: "count",
+	},
+	"vault_rollback_attempt_cubbyhole--mean": {
+		Name: "vault-rollback-attempts-cubbyhole",
+		Unit: "count",
+	},
+	"vault_rollback_attempt_secret--mean": {
+		Name: "vault-rollback-attempts-secret",
+		Unit: "count",
+	},
+	"vault_rollback_attempt_sys--mean": {
+		Name: "vault-rollback-attempts-sys",
+		Unit: "count",
+	},
+	"vault_rollback_attempt_pki--mean": {
+		Name: "vault-rollback-attempts-pki",
+		Unit: "count",
+	},
+	"vault_route_rollback_auth-token--mean": {
+		Name: "vault-route-rollbacks-auth-token",
+		Unit: "count",
+	},
+	"vault_route_rollback_cubbyhole--mean": {
+		Name: "vault-route-rollbacks-cubbyhole",
+		Unit: "count",
+	},
+	"vault_route_rollback_secret--mean": {
+		Name: "vault-route-rollbacks-secret",
+		Unit: "count",
+	},
+	"vault_route_rollback_sys--mean": {
+		Name: "vault-route-rollbacks-sys",
+		Unit: "count",
+	},
+	"vault_route_rollback_pki--mean": {
+		Name: "vault-route-rollbacks-pki",
+		Unit: "count",
+	},
+	"vault_etcd_put-value": {
+		Name: "vault-etcd-put-ops",
+		Unit: "count",
+	},
+	"vault_etcd_get-value": {
+		Name: "vault-etcd-get-ops",
+		Unit: "count",
+	},
+	"vault_etcd_delete-value": {
+		Name: "vault-etcd-delete-ops",
+		Unit: "count",
+	},
+	"vault_etcd_list-value": {
+		Name: "vault-etcd-list-ops",
+		Unit: "count",
+	},
 }
 
 type Translation struct {
