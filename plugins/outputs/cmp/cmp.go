@@ -978,6 +978,122 @@ var translateMap = map[string]Translation{
 		Name: "vault-etcd-list-ops",
 		Unit: "count",
 	},
+	"redis-blocked.clients": {
+	  Name: "redis-blocked-clients",
+	  Unit: "count",
+	},
+	"redis-client.biggest.input.buf": {
+	  Name: "redis-client-biggest-input-buf",
+	  Unit: "count",
+	},
+	"redis-clients": {
+	  Name: "redis-clients",
+	  Unit: "count",
+	},
+	"redis-cluster.enabled": {
+	  Name: "redis-cluster-enabled",
+	  Unit: "count",
+	},
+	"redis-connected.slaves": {
+	  Name: "redis-connected-slaves",
+	  Unit: "count",
+	},
+	"redis-evicted.keys": {
+	  Name: "redis-evicted-keys.cntr",
+	  Unit: "count",
+	},
+	"redis-expired.keys": {
+	  Name: "redis-expired-keys.cntr",
+	  Unit: "count",
+	},
+	"redis-instantaneous.ops.per.sec": {
+	  Name: "redis-ops-per-sec",
+	  Unit: "count",
+	},
+	"redis-keyspace.hitrate": {
+	  Name: "redis-keyspace-hitrate",
+	  Unit: "count",
+	},
+	"redis-keyspace.hits": {
+	  Name: "redis-keyspace-hits",
+	  Unit: "count",
+	},
+	"redis-keyspace.misses": {
+	  Name: "redis-keyspace-misses",
+	  Unit: "count",
+	},
+	"redis-master.repl.offset": {
+	  Name: "redis-master-repl-offset",
+	  Unit: "count",
+	},
+	"redis-pubsub.channels": {
+	  Name: "redis-pubsub-channels.cntr",
+	  Unit: "count",
+	},
+	"redis-pubsub.patterns": {
+	  Name: "redis-pubsub-patterns.cntr",
+	  Unit: "count",
+	},
+	"redis-rejected.connections": {
+	  Name: "redis-rejected-connections",
+	  Unit: "count",
+	},
+	"redis-repl.backlog.active": {
+	  Name: "redis-repl-backlog-active",
+	  Unit: "count",
+	},
+	"redis-repl.backlog.size": {
+	  Name: "redis-repl-backlog-size",
+	  Unit: "B",
+	},
+	"redis-sync.partial.err": {
+	  Name: "redis-sync-partial-err",
+	  Unit: "count",
+	},
+	"redis-sync.partial.ok": {
+	  Name: "redis-sync-partial-ok.cntr",
+	  Unit: "count",
+	},
+	"redis-total.commands.processed": {
+	  Name: "redis-total-commands-processed.cntr",
+	  Unit: "count",
+	},
+	"redis-total.connections.received": {
+	  Name: "redis-total-connections-received",
+	  Unit: "count",
+	},
+	"redis-total.net.input.bytes": {
+	  Name: "redis-total-net-input",
+	  Unit: "B",
+	},
+	"redis-total.net.output.bytes": {
+	  Name: "redis-total-output",
+	  Unit: "B",
+	},
+	"redis-used.cpu.sys": {
+	  Name: "redis-used-cpu-sys",
+	  Unit: "percent",
+	},
+	"redis-used.cpu.user": {
+	  Name: "redis-used-cpu-user",
+	  Unit: "percent",
+	},
+	"redis-used.memory": {
+	  Name: "redis-used-memory",
+	  Unit: "B",
+	},
+	"redis-used.memory.lua": {
+	  Name: "redis-used-memory-lua",
+	  Unit: "B",
+	},
+	"redis-used.memory.peak": {
+	  Name: "redis-peak-used-memory",
+	  Unit: "B",
+	},
+	"redis-used.memory.rss": {
+	  Name: "redis-used-memory-rss",
+	  Unit: "B",
+	},
 }
 
 type Translation struct {
