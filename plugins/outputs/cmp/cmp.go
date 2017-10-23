@@ -1463,6 +1463,7 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		container_name := m.Tags()["com.docker.compose.service"]
 		disk_name := m.Tags()["name"]
 		db := m.Tags()["db"]
+		kafka_topic := m.Tags()["topic"]
 
 		if len(cpu) > 0 && cpu != "cpu-total" {
 			suffix = cpu[3:]
@@ -1476,6 +1477,8 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 			suffix = disk_name
 		} else if m.Name() == "postgresql" && len(db) > 0 {
 			suffix = db
+		} else if strings.HasPrefix(m.Name(), "kafka.") && len(kafka_topic) > 0 {
+			suffix = kafka_topic
 		}
 
 		timestamp := m.Time().UTC().Format("2006-01-02T15:04:05.999999Z")
