@@ -1094,6 +1094,282 @@ var translateMap = map[string]Translation{
 		Name: "redis-used-memory-rss",
 		Unit: "B",
 	},
+	"zookeeper-outstanding.requests": {
+		Name: "zookeeper-outstanding-requests",
+		Unit: "count",
+	},
+	"zookeeper-open.file.descriptor.count": {
+		Name: "zookeeper-open-file-descriptor.cntr",
+		Unit: "count",
+	},
+	"zookeeper-packets.sent": {
+		Name: "zookeeper-packets-sent",
+		Unit: "count",
+	},
+	"zookeeper-max.latency": {
+		Name: "zookeeper-max-latency",
+		Unit: "count",
+	},
+	"zookeeper-packets.received": {
+		Name: "zookeeper-packets-received",
+		Unit: "count",
+	},
+	"zookeeper-approximate.data.size": {
+		Name: "zookeeper-approximate-data-size",
+		Unit: "B",
+	},
+	"zookeeper-avg.latency": {
+		Name: "zookeeper-avg-latency",
+		Unit: "count",
+	},
+	"zookeeper-max.file.descriptor.count": {
+		Name: "zookeeper-max-file-descriptor.cntr",
+		Unit: "count",
+	},
+	"zookeeper-ephemerals.count": {
+		Name: "zookeeper-ephemerals.cntr",
+		Unit: "count",
+	},
+	"zookeeper-num.alive.connections": {
+		Name: "zookeeper-alive-connections",
+		Unit: "count",
+	},
+	"zookeeper-znode.count": {
+		Name: "zookeeper-znodes.cntr",
+		Unit: "count",
+	},
+	"zookeeper-watch.count": {
+		Name: "zookeeper-watch.cntr",
+		Unit: "count",
+	},
+	"kafka.controller-KafkaController": {
+		Name: "kafka-controller",
+		Unit: "count",
+	},
+	"kafka.network-RequestMetrics.Count": {
+		Name: "kafka-network-requests.cntr",
+		Unit: "count",
+	},
+	"kafka.server-DelayedFetchMetrics.Count": {
+		Name: "kafka-delayed-fetch.cntr",
+		Unit: "count",
+	},
+	"kafka.server-DelayedOperationPurgatory": {
+		Name: "kafka-delayed-operation-purgatory",
+		Unit: "count",
+	},
+	"kafka.server-Fetch.byte-rate": {
+		Name: "kafka-fetch-byte-rate",
+		Unit: "count",
+	},
+	"kafka.server-Fetch.throttle-time": {
+		Name: "kafka-fetch-throttle-time",
+		Unit: "count",
+	},
+	"kafka.server-FetcherLagMetrics": {
+		Name: "kafka-fetcher-lag",
+		Unit: "count",
+	},
+	"kafka.server-FetcherStats.Count": {
+		Name: "kafka-fetcher-stats.cntr",
+		Unit: "count",
+	},
+	"kafka.server-KafkaRequestHandlerPool.Count": {
+		Name: "kafka-request-handler-pool.cntr",
+		Unit: "count",
+	},
+	"kafka.server-LeaderReplication.byte-rate": {
+		Name: "kafka-leader-replication-rate",
+		Unit: "B",
+	},
+	"kafka.server-Produce.byte-rate": {
+		Name: "kafka-produce-byte-rate",
+		Unit: "count",
+	},
+	"kafka.server-Produce.queue-size": {
+		Name: "kafka-produce-queue-size",
+		Unit: "count",
+	},
+	"kafka.server-Produce.throttle-time": {
+		Name: "kafka-produce-throttle-time",
+		Unit: "count",
+	},
+	"kafka.server-replica-fetcher-metrics.connection-close-rate": {
+		Name: "kafka-replica-fetcher-connection-close-rate",
+		Unit: "count",
+	},
+	"kafka.server-replica-fetcher-metrics.connection-count": {
+		Name: "kafka-replica-fetcher-connection-count",
+		Unit: "count",
+	},
+	"kafka.server-replica-fetcher-metrics.connection-creation-rate": {
+		Name: "kafka-replica-fetcher-connection-creation-rate",
+		Unit: "count",
+	},
+	"kafka.server-replica-fetcher-metrics.incoming-byte-rate": {
+		Name: "kafka-replica-fetcher-incoming-byte-rate",
+		Unit: "count",
+	},
+	"kafka.server-replica-fetcher-metrics.io-ratio": {
+		Name: "kafka-replica-fetcher-io-rate",
+		Unit: "count",
+	},
+	"kafka.server-replica-fetcher-metrics.io-time-ns-avg": {
+		Name:       "kafka-replica-fetcher-io-time",
+		Unit:       "s",
+		Conversion: divide_by(1000 * 1000 * 1000),
+	},
+	"kafka.server-replica-fetcher-metrics.io-wait-ratio": {
+		Name: "kafka-replica-fetcher-io-wait-ratio",
+		Unit: "count",
+	},
+	"kafka.server-replica-fetcher-metrics.io-wait-time-ns-avg": {
+		Name:       "kafka-replica-fetcher-io-wait-time",
+		Unit:       "s",
+		Conversion: divide_by(1000 * 1000 * 1000),
+	},
+	"kafka.server-replica-fetcher-metrics.network-io-rate": {
+		Name: "kafka-replica-fetcher-network-io-rate",
+		Unit: "count",
+	},
+	"kafka.server-replica-fetcher-metrics.outgoing-byte-rate": {
+		Name: "kafka-replica-fetcher-outgoing-byte-rate",
+		Unit: "count",
+	},
+	"kafka.server-replica-fetcher-metrics.request-rate": {
+		Name: "kafka-replica-fetcher-request-rate",
+		Unit: "coutn",
+	},
+	"kafka.server-replica-fetcher-metrics.request-size-avg": {
+		Name: "kafka-replica-fetcher-request-size-avg",
+		Unit: "B",
+	},
+	"kafka.server-replica-fetcher-metrics.request-size-max": {
+		Name: "kafka-replica-fetcher-request-size-max",
+		Unit: "B",
+	},
+	"kafka.server-replica-fetcher-metrics.response-rate": {
+		Name: "kafka-replica-fetcher-response-rate",
+		Unit: "count",
+	},
+	"kafka.server-replica-fetcher-metrics.select-rate": {
+		Name: "kafka-replica-fetcher-select-rate",
+		Unit: "count",
+	},
+	"kafka.server-ReplicaFetcherManager": {
+		Name: "kafka-fetcher-replica-manager",
+		Unit: "count",
+	},
+	"kafka.server-SessionExpireListener.Count": {
+		Name: "kafka-session-expiry-listener",
+		Unit: "count",
+	},
+	"kafka.server-socket-server-metrics.connection-close-rate": {
+		Name: "kafka-socket-connection-close-rate",
+		Unit: "count",
+	},
+	"kafka.server-socket-server-metrics.connection-count": {
+		Name: "kafka-socket-connection-count",
+		Unit: "count",
+	},
+	"kafka.server-socket-server-metrics.connection-creation-rate": {
+		Name: "kafka-socket-connection-creation-rate",
+		Unit: "count",
+	},
+	"kafka.server-socket-server-metrics.incoming-byte-rate": {
+		Name: "kafka-socket-incoming-byte-rate",
+		Unit: "count",
+	},
+	"kafka.server-socket-server-metrics.io-ratio": {
+		Name: "kafka-socket-io-ratio",
+		Unit: "count",
+	},
+	"kafka.server-socket-server-metrics.io-time-ns-avg": {
+		Name:       "kafka-socket-avg-io-time",
+		Unit:       "s",
+		Conversion: divide_by(1000 * 1000 * 1000),
+	},
+	"kafka.server-socket-server-metrics.io-wait-ratio": {
+		Name: "kafka-socket-io-wait",
+		Unit: "count",
+	},
+	"kafka.server-socket-server-metrics.io-wait-time-ns-avg": {
+		Name:       "kafka-socket-io-wait-time",
+		Unit:       "s",
+		Conversion: divide_by(1000 * 1000 * 1000),
+	},
+	"kafka.server-socket-server-metrics.network-io-rate": {
+		Name: "kafka-socket-network-io-rate",
+		Unit: "count",
+	},
+	"kafka.server-socket-server-metrics.outgoing-byte-rate": {
+		Name: "kafka-socket-outgoing-byte-rate",
+		Unit: "count",
+	},
+	"kafka.server-socket-server-metrics.request-rate": {
+		Name: "kafka-socket-request-rate",
+		Unit: "count",
+	},
+	"kafka.server-socket-server-metrics.request-size-avg": {
+		Name: "kafka-socket-request-size-avg",
+		Unit: "B",
+	},
+	"kafka.server-socket-server-metrics.request-size-max": {
+		Name: "kafka-socket-request-size-max",
+		Unit: "B",
+	},
+	"kafka.server-socket-server-metrics.response-rate": {
+		Name: "kafka-socket-response-rate",
+		Unit: "count",
+	},
+	"kafka.server-socket-server-metrics.select-rate": {
+		Name: "kafka-socket-select-rate",
+		Unit: "count",
+	},
+	"kafka.server-BrokerTopicMetrics.Count": {
+		Name: "kafka-broker-topic-count",
+		Unit: "count",
+	},
+	"kafka.server-ReplicaManager.Count": {
+		Name: "kafka-replica-manager-count",
+		Unit: "count",
+	},
+	"kafka.server-KafkaServer": {
+		Name: "kafka-servers",
+		Unit: "count",
+	},
+	"kafka.server-ReplicaManager": {
+		Name: "kafka-servers",
+		Unit: "count",
+	},
+	"kafka.server-kafka-metrics-count": {
+		Name: "kafka-metrics-count",
+		Unit: "count",
+	},
+	"kafka.controller-ControllerStats.Count": {
+		Name: "kafka-controller-stats.cntr",
+		Unit: "count",
+	},
+	"kafka.controller-ControllerStats.Min": {
+		Name: "kafka-controller-stats-min",
+		Unit: "count",
+	},
+	"kafka.controller-ControllerStats.Max": {
+		Name: "kafka-controller-stats-max",
+		Unit: "count",
+	},
+	"kafka.network-RequestMetrics.Min": {
+		Name: "kafka-network-requests-min",
+		Unit: "count",
+	},
+	"kafka.network-RequestMetrics.Max": {
+		Name: "kafka-network-requests-max",
+		Unit: "count",
+	},
+	"kafka.server-Fetch.queue-size": {
+		Name: "kafka-fetch-queue-size",
+		Unit: "count",
+	},
 }
 
 type Translation struct {
