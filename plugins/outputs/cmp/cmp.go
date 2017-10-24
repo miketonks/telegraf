@@ -534,6 +534,42 @@ var translateMap = map[string]Translation{
 		Name: "mongodb-cache-used",
 		Unit: "percent",
 	},
+	"mongodb_db_stats-index.size": {
+		Name: "mongodb-db-index-size",
+		Unit: "B",
+	},
+	"mongodb_db_stats-data.size": {
+	  Name: "mongodb-db-data-size",
+	  Unit: "B",
+		},
+	"mongodb_db_stats-objects": {
+	  Name: "mongodb-db-objects",
+	  Unit: "count",
+		},
+	"mongodb_db_stats-ok": {
+	  Name: "mongodb-db-ok",
+	  Unit: "count",
+		},
+	"mongodb_db_stats-storage.size": {
+	  Name: "mongodb-db-storage-size",
+	  Unit: "B",
+		},
+	"mongodb_db_stats-avg.obj.size": {
+	  Name: "mongodb-db-obj-size-avg",
+	  Unit: "B",
+		},
+	"mongodb_db_stats-indexes": {
+	  Name: "mongodb-db-indexes",
+	  Unit: "count",
+		},
+	"mongodb_db_stats-collections": {
+	  Name: "mongodb-db-collections",
+	  Unit: "count",
+		},
+	"mongodb_db_stats-num.extents": {
+	  Name: "mongodb-db-num-extents",
+	  Unit: "count",
+		},
 	"postgresql-numbackends": {
 		Name: "postgres-num-backends",
 		Unit: "count",
