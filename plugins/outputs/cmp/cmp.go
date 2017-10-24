@@ -1500,6 +1500,7 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		disk_name := m.Tags()["name"]
 		db := m.Tags()["db"]
 		kafka_topic := m.Tags()["topic"]
+		mongodb_db_name := m.Tags()["db_name"]
 
 		if len(cpu) > 0 && cpu != "cpu-total" {
 			suffix = cpu[3:]
@@ -1513,6 +1514,8 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 			suffix = disk_name
 		} else if m.Name() == "postgresql" && len(db) > 0 {
 			suffix = db
+		} else if strings.HasPrefix(m.Name(), "mongodb_") && len(mongodb_db_name) > 0 {
+			suffix = mongodb_db_name
 		} else if strings.HasPrefix(m.Name(), "kafka.") && len(kafka_topic) > 0 {
 			suffix = kafka_topic
 		}
