@@ -777,27 +777,27 @@ var translateMap = map[string]Translation{
 		Unit: "exceptions",
 	},
 	"vault_audit_log_request-mean": {
-		Name: "vault-audit-log-requests.cntr",
+		Name: "vault-audit-log-requests",
 		Unit: "count",
 	},
 	"vault_audit_log_response-mean": {
-		Name: "vault-audit-log-responses.cntr",
+		Name: "vault-audit-log-responses",
 		Unit: "count",
 	},
 	"vault_barrier_delete-mean": {
-		Name: "vault-barrier-deletes.cntr",
+		Name: "vault-barrier-deletes",
 		Unit: "count",
 	},
 	"vault_barrier_get-mean": {
-		Name: "vault-barrier-get-ops.cntr",
+		Name: "vault-barrier-get-ops",
 		Unit: "count",
 	},
 	"vault_barrier_put-mean": {
-		Name: "vault-barrier-put-ops.cntr",
+		Name: "vault-barrier-put-ops",
 		Unit: "count",
 	},
 	"vault_barrier_list-value": {
-		Name: "vault-barrier-list-ops.cntr",
+		Name: "vault-barrier-list-ops",
 		Unit: "count",
 	},
 	"vault_core_check_token-mean": {
@@ -805,11 +805,11 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"vault_core_fetch_acl_and_token-mean": {
-		Name: "vault-acl-and-token-fetches.cntr",
+		Name: "vault-acl-and-token-fetches",
 		Unit: "count",
 	},
 	"vault_core_handle_request-mean": {
-		Name: "vault-requests.cntr",
+		Name: "vault-requests",
 		Unit: "count",
 	},
 	"vault_core_handle_login_request-mean": {
@@ -857,7 +857,7 @@ var translateMap = map[string]Translation{
 		Unit: "B",
 	},
 	"vault_runtime_free_count-value": {
-		Name: "vault-free-ops",
+		Name: "vault-free-ops.cntr",
 		Unit: "count",
 	},
 	"vault_runtime_heap_objects-value": {
@@ -865,7 +865,7 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"vault_runtime_malloc_count-value": {
-		Name: "vault-malloc-ops",
+		Name: "vault-malloc-ops.cntr",
 		Unit: "count",
 	},
 	"vault_runtime_num_goroutines-value": {
@@ -891,7 +891,7 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"vault_expire_num_leases-value": {
-		Name: "vault-expired-leases",
+		Name: "vault-expired-leases.cntr",
 		Unit: "count",
 	},
 	"vault_expire_revoke": {
@@ -1047,15 +1047,15 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"redis-keyspace.hitrate": {
-		Name: "redis-keyspace-hitrate",
+		Name: "redis-keyspace-hitrate.cntr",
 		Unit: "count",
 	},
 	"redis-keyspace.hits": {
-		Name: "redis-keyspace-hits",
+		Name: "redis-keyspace-hits.cntr",
 		Unit: "count",
 	},
 	"redis-keyspace.misses": {
-		Name: "redis-keyspace-misses",
+		Name: "redis-keyspace-misses.cntr",
 		Unit: "count",
 	},
 	"redis-master.repl.offset": {
@@ -1095,23 +1095,23 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"redis-total.connections.received": {
-		Name: "redis-total-connections-received",
+		Name: "redis-total-connections-received.cntr",
 		Unit: "count",
 	},
 	"redis-total.net.input.bytes": {
-		Name: "redis-total-net-input",
+		Name: "redis-total-net-input.cntr",
 		Unit: "B",
 	},
 	"redis-total.net.output.bytes": {
-		Name: "redis-total-output",
+		Name: "redis-total-output.cntr",
 		Unit: "B",
 	},
 	"redis-used.cpu.sys": {
-		Name: "redis-used-cpu-sys",
+		Name: "redis-used-cpu-sys.cntr",
 		Unit: "percent",
 	},
 	"redis-used.cpu.user": {
-		Name: "redis-used-cpu-user",
+		Name: "redis-used-cpu-user.cntr",
 		Unit: "percent",
 	},
 	"redis-used.memory": {
@@ -1139,7 +1139,7 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"zookeeper-packets.sent": {
-		Name: "zookeeper-packets-sent",
+		Name: "zookeeper-packets-sent.cntr",
 		Unit: "count",
 	},
 	"zookeeper-max.latency": {
@@ -1147,7 +1147,7 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"zookeeper-packets.received": {
-		Name: "zookeeper-packets-received",
+		Name: "zookeeper-packets-received.cntr",
 		Unit: "count",
 	},
 	"zookeeper-approximate.data.size": {
@@ -1363,7 +1363,7 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"kafka.server-BrokerTopicMetrics.Count": {
-		Name: "kafka-broker-topic-count",
+		Name: "kafka-broker-topic-count.cntr",
 		Unit: "count",
 	},
 	"kafka.server-ReplicaManager.Count": {
@@ -1383,7 +1383,7 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"kafka.controller-ControllerStats.Count": {
-		Name: "kafka-controller-stats.cntr",
+		Name: "kafka-controller-stats",
 		Unit: "count",
 	},
 	"kafka.controller-ControllerStats.Min": {
