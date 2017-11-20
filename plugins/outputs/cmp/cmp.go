@@ -1186,8 +1186,12 @@ var translateMap = map[string]Translation{
 		Name: "kafka-network-requests.cntr",
 		Unit: "count",
 	},
-	"kafka.server-DelayedFetchMetrics.Count": {
-		Name: "kafka-delayed-fetch.cntr",
+	"kafka.server-DelayedFetchMetrics.Count.follower": {
+		Name: "kafka-delayed-fetch-follower.cntr",
+		Unit: "count",
+	},
+	"kafka.server-DelayedFetchMetrics.Count.consumer": {
+		Name: "kafka-delayed-fetch-consumer.cntr",
 		Unit: "count",
 	},
 	"kafka.server-DelayedOperationPurgatory": {
@@ -1501,6 +1505,7 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		db := m.Tags()["db"]
 		kafka_topic := m.Tags()["topic"]
 		mongodb_db_name := m.Tags()["db_name"]
+		kafka_fetcher_type := m.Tags()["fetcherType"]
 
 		if len(cpu) > 0 && cpu != "cpu-total" {
 			suffix = cpu[3:]
@@ -1520,8 +1525,12 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 			suffix = kafka_topic
 		}
 
+    if
 		timestamp := m.Time().UTC().Format("2006-01-02T15:04:05.999999Z")
 		for k, v := range m.Fields() {
+			if k == "DelayedFetchMetrics.Count" {
+				k = fmt.Sprintf("%s.%s", k, kafka_fetcher_type)
+			}
 			metric_name := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
 			translation, found := translateMap[metric_name]
 			if found {
