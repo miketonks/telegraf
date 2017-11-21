@@ -1210,9 +1210,13 @@ var translateMap = map[string]Translation{
 		Name: "kafka-fetcher-lag",
 		Unit: "count",
 	},
-	"kafka.server-FetcherStats.Count": {
-		Name: "kafka-fetcher-stats.cntr",
-		Unit: "count",
+	"kafka.server-FetcherStats.Count.BytesPerSec": {
+	  Name: "kafka-fetcher-bytes",
+	  Unit: "B/s",
+	},
+	"kafka.server-FetcherStats.Count.RequestsPerSec": {
+	  Name: "kafka-fetcher-requests",
+	  Unit: "count/s",
 	},
 	"kafka.server-KafkaRequestHandlerPool.Count": {
 		Name: "kafka-request-handler-pool.cntr",
@@ -1366,9 +1370,37 @@ var translateMap = map[string]Translation{
 		Name: "kafka-socket-select-rate",
 		Unit: "count",
 	},
-	"kafka.server-BrokerTopicMetrics.Count": {
-		Name: "kafka-broker-topic-count.cntr",
-		Unit: "count",
+	"kafka.server-BrokerTopicMetrics.Count.BytesInPerSec": {
+	  Name: "kafka-bytes-in",
+	  Unit: "B/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.BytesOutPerSec": {
+	  Name: "kafka-bytes-out",
+	  Unit: "B/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.BytesRejectedPerSec": {
+	  Name: "kafka-bytes-rejected",
+	  Unit: "B/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.FailedFetchRequestsPerSec": {
+	  Name: "kafka-failed-fetch-requests",
+	  Unit: "count/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.FailedProduceRequestsPerSec": {
+	  Name: "kafka-failed-produce-requests",
+	  Unit: "count/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.MessagesInPerSec": {
+	  Name: "kafka-messages-in",
+	  Unit: "count/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.TotalFetchRequestsPerSec": {
+	  Name: "kafka-fetch-requests",
+	  Unit: "count/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.TotalProduceRequestsPerSec": {
+	  Name: "kafka-produce-requests",
+	  Unit: "count/s",
 	},
 	"kafka.server-ReplicaManager.Count": {
 		Name: "kafka-replica-manager-count",
@@ -1504,8 +1536,8 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		disk_name := m.Tags()["name"]
 		db := m.Tags()["db"]
 		kafka_topic := m.Tags()["topic"]
+		kafka_broker_host := m.Tags()["brokerHost"]
 		mongodb_db_name := m.Tags()["db_name"]
-		kafka_fetcher_type := m.Tags()["fetcherType"]
 
 		if len(cpu) > 0 && cpu != "cpu-total" {
 			suffix = cpu[3:]
@@ -1523,13 +1555,16 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 			suffix = mongodb_db_name
 		} else if strings.HasPrefix(m.Name(), "kafka.") && len(kafka_topic) > 0 {
 			suffix = kafka_topic
+		} else if strings.HasPrefix(m.Name(), "kafka.") && len(kafka_broker_host) > 0 {
+			suffix = kafka_broker_host
 		}
 
-    if
 		timestamp := m.Time().UTC().Format("2006-01-02T15:04:05.999999Z")
 		for k, v := range m.Fields() {
 			if k == "DelayedFetchMetrics.Count" {
-				k = fmt.Sprintf("%s.%s", k, kafka_fetcher_type)
+				k = fmt.Sprintf("%s.%s", k, m.Tags()["fetcherType"])
+			} else if k == "BrokerTopicMetrics.Count" || k == "FetcherStats.Count" {
+				k = fmt.Sprintf("%s.%s", k, m.Tags()["name"])
 			}
 			metric_name := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
 			translation, found := translateMap[metric_name]
