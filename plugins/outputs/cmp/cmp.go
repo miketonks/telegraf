@@ -1182,12 +1182,73 @@ var translateMap = map[string]Translation{
 		Name: "kafka-controller",
 		Unit: "count",
 	},
-	"kafka.network-RequestMetrics.Count": {
-		Name: "kafka-network-requests.cntr",
+	"kafka.network-RequestMetrics.Count.Produce.RequestsPerSec": {
+	  Name: "kafka-produce-requests.cntr",
+	  Unit: "count/s",
+	},
+	"kafka.network-RequestMetrics.Count.FetchConsumer.RequestsPerSec": {
+	  Name: "kafka-fetch-consumer-requests.cntr",
+	  Unit: "count/s",
+	},
+	"kafka.network-RequestMetrics.Count.FetchFollower.RequestsPerSec": {
+	  Name: "kafka-fetch-follower-requests",
+	  Unit: "count/s",
+	},
+	"kafka.network-RequestMetrics.Count.Produce.TotalTimeMs": {
+	  Name: "kafka-produce-time-total.cntr",
+	  Unit: "s",
+    Conversion: divide_by(1000),
+	},
+	"kafka.network-RequestMetrics.Count.FetchConsumer.TotalTimeMs": {
+	  Name: "kafka-fetch-consumer-time-total",
+	  Unit: "s",
+		Conversion: divide_by(1000),
+	},
+	"kafka.network-RequestMetrics.Count.FetchFollower.TotalTimeMs": {
+	  Name: "kafka-fetch-follower-time-total",
+	  Unit: "s",
+		Conversion: divide_by(1000),
+	},
+	"kafka.network-RequestMetrics.Min.Produce.TotalTimeMs": {
+	  Name: "kafka-produce-time-total-min",
+		Unit: "s",
+		Conversion: divide_by(1000),
+	},
+	"kafka.network-RequestMetrics.Max.Produce.TotalTimeMs": {
+	  Name: "kafka-produce-time-total-max",
+		Unit: "s",
+		Conversion: divide_by(1000),
+	},
+	"kafka.network-RequestMetrics.Min.FetchConsumer.TotalTimeMs": {
+	  Name: "kafka-fetch-consumer-time-total-min",
+		Unit: "s",
+		Conversion: divide_by(1000),
+	},
+	"kafka.network-RequestMetrics.Max.FetchConsumer.TotalTimeMs": {
+	  Name: "kafka-fetch-consumer-time-total-max",
+		Unit: "s",
+		Conversion: divide_by(1000),
+	},
+	"kafka.network-RequestMetrics.Min.FetchFollower.TotalTimeMs": {
+	  Name: "kafka-fetch-follower-time-total-min",
+		Unit: "s",
+		Conversion: divide_by(1000),
+	},
+	"kafka.network-RequestMetrics.Max.FetchFollower.TotalTimeMs": {
+	  Name: "kafka-fetch-follower-time-total-max",
+		Unit: "s",
+		Conversion: divide_by(1000),
+	},
+	"kafka.server-Fetch.queue-size": {
+		Name: "kafka-fetch-queue-size",
 		Unit: "count",
 	},
-	"kafka.server-DelayedFetchMetrics.Count": {
-		Name: "kafka-delayed-fetch.cntr",
+	"kafka.server-DelayedFetchMetrics.Count.follower": {
+		Name: "kafka-delayed-fetch-follower.cntr",
+		Unit: "count",
+	},
+	"kafka.server-DelayedFetchMetrics.Count.consumer": {
+		Name: "kafka-delayed-fetch-consumer.cntr",
 		Unit: "count",
 	},
 	"kafka.server-DelayedOperationPurgatory": {
@@ -1206,9 +1267,13 @@ var translateMap = map[string]Translation{
 		Name: "kafka-fetcher-lag",
 		Unit: "count",
 	},
-	"kafka.server-FetcherStats.Count": {
-		Name: "kafka-fetcher-stats.cntr",
-		Unit: "count",
+	"kafka.server-FetcherStats.Count.BytesPerSec": {
+	  Name: "kafka-fetcher-bytes.cntr",
+	  Unit: "B/s",
+	},
+	"kafka.server-FetcherStats.Count.RequestsPerSec": {
+	  Name: "kafka-fetcher-requests.cntr",
+	  Unit: "count/s",
 	},
 	"kafka.server-KafkaRequestHandlerPool.Count": {
 		Name: "kafka-request-handler-pool.cntr",
@@ -1297,7 +1362,7 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"kafka.server-SessionExpireListener.Count": {
-		Name: "kafka-session-expiry-listener",
+		Name: "kafka-session-expiry-listener.cntr",
 		Unit: "count",
 	},
 	"kafka.server-socket-server-metrics.connection-close-rate": {
@@ -1362,9 +1427,37 @@ var translateMap = map[string]Translation{
 		Name: "kafka-socket-select-rate",
 		Unit: "count",
 	},
-	"kafka.server-BrokerTopicMetrics.Count": {
-		Name: "kafka-broker-topic-count.cntr",
-		Unit: "count",
+	"kafka.server-BrokerTopicMetrics.Count.BytesInPerSec": {
+	  Name: "kafka-bytes-in.cntr",
+	  Unit: "B/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.BytesOutPerSec": {
+	  Name: "kafka-bytes-out.cntr",
+	  Unit: "B/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.BytesRejectedPerSec": {
+	  Name: "kafka-bytes-rejected",
+	  Unit: "B/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.FailedFetchRequestsPerSec": {
+	  Name: "kafka-failed-fetch-requests",
+	  Unit: "count/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.FailedProduceRequestsPerSec": {
+	  Name: "kafka-failed-produce-requests.cntr",
+	  Unit: "count/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.MessagesInPerSec": {
+	  Name: "kafka-messages-in.cntr",
+	  Unit: "count/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.TotalFetchRequestsPerSec": {
+	  Name: "kafka-fetch-requests.cntr",
+	  Unit: "count/s",
+	},
+	"kafka.server-BrokerTopicMetrics.Count.TotalProduceRequestsPerSec": {
+	  Name: "kafka-produce-requests.cntr",
+	  Unit: "count/s",
 	},
 	"kafka.server-ReplicaManager.Count": {
 		Name: "kafka-replica-manager-count",
@@ -1392,18 +1485,6 @@ var translateMap = map[string]Translation{
 	},
 	"kafka.controller-ControllerStats.Max": {
 		Name: "kafka-controller-stats-max",
-		Unit: "count",
-	},
-	"kafka.network-RequestMetrics.Min": {
-		Name: "kafka-network-requests-min",
-		Unit: "count",
-	},
-	"kafka.network-RequestMetrics.Max": {
-		Name: "kafka-network-requests-max",
-		Unit: "count",
-	},
-	"kafka.server-Fetch.queue-size": {
-		Name: "kafka-fetch-queue-size",
 		Unit: "count",
 	},
 }
@@ -1500,6 +1581,7 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		disk_name := m.Tags()["name"]
 		db := m.Tags()["db"]
 		kafka_topic := m.Tags()["topic"]
+		kafka_broker_host := m.Tags()["brokerHost"]
 		mongodb_db_name := m.Tags()["db_name"]
 
 		if len(cpu) > 0 && cpu != "cpu-total" {
@@ -1518,10 +1600,19 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 			suffix = mongodb_db_name
 		} else if strings.HasPrefix(m.Name(), "kafka.") && len(kafka_topic) > 0 {
 			suffix = kafka_topic
+		} else if strings.HasPrefix(m.Name(), "kafka.") && len(kafka_broker_host) > 0 {
+			suffix = kafka_broker_host
 		}
 
 		timestamp := m.Time().UTC().Format("2006-01-02T15:04:05.999999Z")
 		for k, v := range m.Fields() {
+			if k == "DelayedFetchMetrics.Count" {
+				k = fmt.Sprintf("%s.%s", k, m.Tags()["fetcherType"])
+			} else if k == "BrokerTopicMetrics.Count" || k == "FetcherStats.Count" {
+				k = fmt.Sprintf("%s.%s", k, m.Tags()["name"])
+			} else if strings.HasPrefix(k, "RequestMetrics.") {
+				k = fmt.Sprintf("%s.%s.%s", k, m.Tags()["request"], m.Tags()["name"])
+			}
 			metric_name := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
 			translation, found := translateMap[metric_name]
 			if found {
