@@ -539,37 +539,37 @@ var translateMap = map[string]Translation{
 		Unit: "B",
 	},
 	"mongodb_db_stats-data.size": {
-	  Name: "mongodb-db-data-size",
-	  Unit: "B",
-		},
+		Name: "mongodb-db-data-size",
+		Unit: "B",
+	},
 	"mongodb_db_stats-objects": {
-	  Name: "mongodb-db-objects",
-	  Unit: "count",
-		},
+		Name: "mongodb-db-objects",
+		Unit: "count",
+	},
 	"mongodb_db_stats-ok": {
-	  Name: "mongodb-db-ok",
-	  Unit: "count",
-		},
+		Name: "mongodb-db-ok",
+		Unit: "count",
+	},
 	"mongodb_db_stats-storage.size": {
-	  Name: "mongodb-db-storage-size",
-	  Unit: "B",
-		},
+		Name: "mongodb-db-storage-size",
+		Unit: "B",
+	},
 	"mongodb_db_stats-avg.obj.size": {
-	  Name: "mongodb-db-obj-size-avg",
-	  Unit: "B",
-		},
+		Name: "mongodb-db-obj-size-avg",
+		Unit: "B",
+	},
 	"mongodb_db_stats-indexes": {
-	  Name: "mongodb-db-indexes",
-	  Unit: "count",
-		},
+		Name: "mongodb-db-indexes",
+		Unit: "count",
+	},
 	"mongodb_db_stats-collections": {
-	  Name: "mongodb-db-collections",
-	  Unit: "count",
-		},
+		Name: "mongodb-db-collections",
+		Unit: "count",
+	},
 	"mongodb_db_stats-num.extents": {
-	  Name: "mongodb-db-num-extents",
-	  Unit: "count",
-		},
+		Name: "mongodb-db-num-extents",
+		Unit: "count",
+	},
 	"postgresql-numbackends": {
 		Name: "postgres-num-backends",
 		Unit: "count",
@@ -1183,60 +1183,60 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"kafka.network-RequestMetrics.Count.Produce.RequestsPerSec": {
-	  Name: "kafka-produce-requests.cntr",
-	  Unit: "count/s",
+		Name: "kafka-produce-requests.cntr",
+		Unit: "count/s",
 	},
 	"kafka.network-RequestMetrics.Count.FetchConsumer.RequestsPerSec": {
-	  Name: "kafka-fetch-consumer-requests.cntr",
-	  Unit: "count/s",
+		Name: "kafka-fetch-consumer-requests.cntr",
+		Unit: "count/s",
 	},
 	"kafka.network-RequestMetrics.Count.FetchFollower.RequestsPerSec": {
-	  Name: "kafka-fetch-follower-requests",
-	  Unit: "count/s",
+		Name: "kafka-fetch-follower-requests",
+		Unit: "count/s",
 	},
 	"kafka.network-RequestMetrics.Count.Produce.TotalTimeMs": {
-	  Name: "kafka-produce-time-total.cntr",
-	  Unit: "s",
-    Conversion: divide_by(1000),
+		Name:       "kafka-produce-time-total.cntr",
+		Unit:       "s",
+		Conversion: divide_by(1000),
 	},
 	"kafka.network-RequestMetrics.Count.FetchConsumer.TotalTimeMs": {
-	  Name: "kafka-fetch-consumer-time-total",
-	  Unit: "s",
+		Name:       "kafka-fetch-consumer-time-total",
+		Unit:       "s",
 		Conversion: divide_by(1000),
 	},
 	"kafka.network-RequestMetrics.Count.FetchFollower.TotalTimeMs": {
-	  Name: "kafka-fetch-follower-time-total",
-	  Unit: "s",
+		Name:       "kafka-fetch-follower-time-total",
+		Unit:       "s",
 		Conversion: divide_by(1000),
 	},
 	"kafka.network-RequestMetrics.Min.Produce.TotalTimeMs": {
-	  Name: "kafka-produce-time-total-min",
-		Unit: "s",
+		Name:       "kafka-produce-time-total-min",
+		Unit:       "s",
 		Conversion: divide_by(1000),
 	},
 	"kafka.network-RequestMetrics.Max.Produce.TotalTimeMs": {
-	  Name: "kafka-produce-time-total-max",
-		Unit: "s",
+		Name:       "kafka-produce-time-total-max",
+		Unit:       "s",
 		Conversion: divide_by(1000),
 	},
 	"kafka.network-RequestMetrics.Min.FetchConsumer.TotalTimeMs": {
-	  Name: "kafka-fetch-consumer-time-total-min",
-		Unit: "s",
+		Name:       "kafka-fetch-consumer-time-total-min",
+		Unit:       "s",
 		Conversion: divide_by(1000),
 	},
 	"kafka.network-RequestMetrics.Max.FetchConsumer.TotalTimeMs": {
-	  Name: "kafka-fetch-consumer-time-total-max",
-		Unit: "s",
+		Name:       "kafka-fetch-consumer-time-total-max",
+		Unit:       "s",
 		Conversion: divide_by(1000),
 	},
 	"kafka.network-RequestMetrics.Min.FetchFollower.TotalTimeMs": {
-	  Name: "kafka-fetch-follower-time-total-min",
-		Unit: "s",
+		Name:       "kafka-fetch-follower-time-total-min",
+		Unit:       "s",
 		Conversion: divide_by(1000),
 	},
 	"kafka.network-RequestMetrics.Max.FetchFollower.TotalTimeMs": {
-	  Name: "kafka-fetch-follower-time-total-max",
-		Unit: "s",
+		Name:       "kafka-fetch-follower-time-total-max",
+		Unit:       "s",
 		Conversion: divide_by(1000),
 	},
 	"kafka.server-Fetch.queue-size": {
@@ -1268,12 +1268,12 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"kafka.server-FetcherStats.Count.BytesPerSec": {
-	  Name: "kafka-fetcher-bytes.cntr",
-	  Unit: "B/s",
+		Name: "kafka-fetcher-bytes.cntr",
+		Unit: "B/s",
 	},
 	"kafka.server-FetcherStats.Count.RequestsPerSec": {
-	  Name: "kafka-fetcher-requests.cntr",
-	  Unit: "count/s",
+		Name: "kafka-fetcher-requests.cntr",
+		Unit: "count/s",
 	},
 	"kafka.server-KafkaRequestHandlerPool.Count": {
 		Name: "kafka-request-handler-pool.cntr",
@@ -1428,36 +1428,36 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.BytesInPerSec": {
-	  Name: "kafka-bytes-in.cntr",
-	  Unit: "B/s",
+		Name: "kafka-bytes-in.cntr",
+		Unit: "B/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.BytesOutPerSec": {
-	  Name: "kafka-bytes-out.cntr",
-	  Unit: "B/s",
+		Name: "kafka-bytes-out.cntr",
+		Unit: "B/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.BytesRejectedPerSec": {
-	  Name: "kafka-bytes-rejected",
-	  Unit: "B/s",
+		Name: "kafka-bytes-rejected",
+		Unit: "B/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.FailedFetchRequestsPerSec": {
-	  Name: "kafka-failed-fetch-requests",
-	  Unit: "count/s",
+		Name: "kafka-failed-fetch-requests",
+		Unit: "count/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.FailedProduceRequestsPerSec": {
-	  Name: "kafka-failed-produce-requests.cntr",
-	  Unit: "count/s",
+		Name: "kafka-failed-produce-requests.cntr",
+		Unit: "count/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.MessagesInPerSec": {
-	  Name: "kafka-messages-in.cntr",
-	  Unit: "count/s",
+		Name: "kafka-messages-in.cntr",
+		Unit: "count/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.TotalFetchRequestsPerSec": {
-	  Name: "kafka-fetch-requests.cntr",
-	  Unit: "count/s",
+		Name: "kafka-fetch-requests.cntr",
+		Unit: "count/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.TotalProduceRequestsPerSec": {
-	  Name: "kafka-produce-requests.cntr",
-	  Unit: "count/s",
+		Name: "kafka-produce-requests.cntr",
+		Unit: "count/s",
 	},
 	"kafka.server-ReplicaManager.Count": {
 		Name: "kafka-replica-manager-count",
@@ -1655,6 +1655,8 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 	if err != nil {
 		return fmt.Errorf("unable to create http.Request, %s\n", err.Error())
 	}
+	userAgent := fmt.Sprintf("telegraf/%s", findVersion())
+	req.Header.Add("User-Agent", userAgent)
 	req.Header.Add("Content-Type", "application/json")
 	req.SetBasicAuth(a.ApiUser, a.ApiKey)
 
