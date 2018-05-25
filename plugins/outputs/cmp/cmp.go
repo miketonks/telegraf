@@ -1487,6 +1487,38 @@ var translateMap = map[string]Translation{
 		Name: "kafka-controller-stats-max",
 		Unit: "count",
 	},
+	"minio_network_sent_bytes_total-counter": {
+		Name: "minio-network-sent-total",
+		Unit: "B",
+	},
+	"minio_network_received_bytes_total-counter": {
+		Name: "minio-network-received-total",
+		Unit: "B",
+	},
+	"minio_disk_storage_bytes-gauge": {
+		Name: "minio-disk-storage-available",
+		Unit: "B",
+	},
+	"minio_disk_storage_free_bytes-gauge": {
+		Name: "minio-disk-storage-free",
+		Unit: "B",
+	},
+	"minio_offline_disks-gauge": {
+		Name: "minio-offline-disks",
+		Unit: "count",
+	},
+	"minio_total_disks-gauge": {
+		Name: "minio-total-disks",
+		Unit: "count",
+	},
+	"minio_http_requests_duration_seconds-sum": {
+		Name: "minio-http-requests-duration-aggregate",
+		Unit: "s",
+	},
+	"minio_http_requests_duration_seconds-count": {
+		Name: "minio-http-requests-count",
+		Unit: "count",
+	},
 }
 
 type Translation struct {
