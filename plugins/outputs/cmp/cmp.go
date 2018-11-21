@@ -1844,7 +1844,7 @@ var translateMap = map[string]Translation{
 	},
 }
 
-// Translation bares the convertion info from the source to the CMP metric
+// Translation bears the convertion info from the source to the CMP metric
 type Translation struct {
 	Name       string
 	Unit       string
@@ -2019,7 +2019,7 @@ func (a *CMP) Write(metrics []telegraf.Metric) error {
 		bytes.NewBuffer(cmpBytes),
 	)
 	if err != nil {
-		return fmt.Errorf("unable to prepare the HTTP rrequest %s", err.Error())
+		return fmt.Errorf("unable to prepare the HTTP request %s", err.Error())
 	}
 	req.Header.Add("User-Agent", fmt.Sprintf("telegraf/%s", a.version))
 	req.Header.Add("Content-Type", "application/json")
