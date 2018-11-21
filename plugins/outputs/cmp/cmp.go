@@ -16,12 +16,12 @@ import (
 
 // CMP represents our plugin config
 type CMP struct {
-	APIUser     string
-	APIKey      string
-	ResourceID  string
-	CMPInstance string
-	Timeout     internal.Duration
-	Debug       bool
+	APIUser     string            `toml:"api_user"`
+	APIKey      string            `toml:"api_key"`
+	ResourceID  string            `toml:"resource_id"`
+	CMPInstance string            `toml:"cmp_instance"`
+	Timeout     internal.Duration `toml:"timeout"`
+	Debug       bool              `toml:"debug"`
 
 	client *http.Client
 }
