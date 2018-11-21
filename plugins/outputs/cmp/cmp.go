@@ -14,11 +14,12 @@ import (
 	"github.com/influxdata/telegraf/plugins/outputs"
 )
 
-type Cmp struct {
-	ApiUser     string
-	ApiKey      string
-	ResourceId  string
-	CmpInstance string
+// CMP represents our plugin config
+type CMP struct {
+	APIUser     string
+	APIKey      string
+	ResourceID  string
+	CMPInstance string
 	Timeout     internal.Duration
 	Debug       bool
 
@@ -45,7 +46,7 @@ var translateMap = map[string]Translation{
 	"cpu-usage.idle": {
 		Name:       "cpu-usage",
 		Unit:       "percent",
-		Conversion: subtract_from_100_percent,
+		Conversion: subtractFrom100Percent,
 	},
 	"cpu-usage.user": {
 		Name: "cpu-usage-user",
@@ -58,7 +59,7 @@ var translateMap = map[string]Translation{
 	"mem-available.percent": {
 		Name:       "memory-usage",
 		Unit:       "percent",
-		Conversion: subtract_from_100_percent,
+		Conversion: subtractFrom100Percent,
 	},
 	"system-load1": {
 		Name: "load-avg-1",
@@ -77,7 +78,7 @@ var translateMap = map[string]Translation{
 		Name: "disk-io-time-percent.cntr",
 		Unit: "percent",
 		// ms / 1000 for s then * 100 for percent
-		Conversion: divide_by(10.0),
+		Conversion: divideBy(10.0),
 	},
 	"diskio-reads": {
 		Name: "disk-read-ops.cntr",
@@ -91,13 +92,13 @@ var translateMap = map[string]Translation{
 		Name: "disk-read-time-percent.cntr",
 		Unit: "percent",
 		// ms / 1000 for s then * 100 for percent
-		Conversion: divide_by(10.0),
+		Conversion: divideBy(10.0),
 	},
 	"diskio-write.time": {
 		Name: "disk-write-time-percent.cntr",
 		Unit: "percent",
 		// ms / 1000 for s then * 100 for percent
-		Conversion: divide_by(10.0),
+		Conversion: divideBy(10.0),
 	},
 	//     "system-uptime": {
 	//         Name: "uptime",
@@ -113,7 +114,7 @@ var translateMap = map[string]Translation{
 	"elasticsearch_cluster_health-status": {
 		Name:       "es-status",
 		Unit:       "",
-		Conversion: es_cluster_health,
+		Conversion: esClusterHealth,
 	},
 	"elasticsearch_cluster_health-number.of.nodes": {
 		Name: "es-nodes",
@@ -174,12 +175,12 @@ var translateMap = map[string]Translation{
 	"elasticsearch_indices-search.query.time.in.millis": {
 		Name:       "es-search-time.query.cntr",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"elasticsearch_indices-search.fetch.time.in.millis": {
 		Name:       "es-search-time.fetch.cntr",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"elasticsearch_indices-get.total": {
 		Name: "es-get-requests.get.cntr",
@@ -196,17 +197,17 @@ var translateMap = map[string]Translation{
 	"elasticsearch_indices-get.time.in.millis": {
 		Name:       "es-get-time.get",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"elasticsearch_indices-get.exists.time.in.millis": {
 		Name:       "es-get-time.exists",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"elasticsearch_indices-get.missing.time.in.millis": {
 		Name:       "es-get-time.missing",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"elasticsearch_indices-indexing.index.total": {
 		Name: "es-index-requests.index.cntr",
@@ -223,17 +224,17 @@ var translateMap = map[string]Translation{
 	"elasticsearch_indices-indexing.index.time.in.millis": {
 		Name:       "es-index-time.index",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"elasticsearch_indices-indexing.delete.time.in.millis": {
 		Name:       "es-index-time.delete",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"elasticsearch_indices-flush.total.time.in.millis": {
 		Name:       "es-index-time.flush.cntr",
 		Unit:       "requests",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"etcd_server_has_leader-gauge": {
 		Name: "etcd-has-leader",
@@ -334,7 +335,7 @@ var translateMap = map[string]Translation{
 	"haproxy-check.duration": {
 		Name:       "haproxy-check-duration",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"haproxy-cli.abort": {
 		Name: "haproxy-client-aborts",
@@ -343,7 +344,7 @@ var translateMap = map[string]Translation{
 	"haproxy-ctime": {
 		Name:       "haproxy-connection-time",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"haproxy-downtime": {
 		Name: "haproxy-downtime",
@@ -404,7 +405,7 @@ var translateMap = map[string]Translation{
 	"haproxy-qtime": {
 		Name:       "haproxy-queue-time",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"haproxy-rate": {
 		Name: "haproxy-rate",
@@ -429,7 +430,7 @@ var translateMap = map[string]Translation{
 	"haproxy-rtime": {
 		Name:       "haproxy-response-time",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"haproxy-scur": {
 		Name: "haproxy-sessions-current",
@@ -450,7 +451,7 @@ var translateMap = map[string]Translation{
 	"haproxy-ttime": {
 		Name:       "haproxy-total-time",
 		Unit:       "s",
-		Conversion: divide_by(1000.0),
+		Conversion: divideBy(1000.0),
 	},
 	"haproxy-wredis": {
 		Name: "haproxy-warnings-redistributed",
@@ -519,12 +520,12 @@ var translateMap = map[string]Translation{
 	"mongodb-resident.megabytes": {
 		Name:       "mongodb-memory-resident",
 		Unit:       "B",
-		Conversion: divide_by(1000.0 * 1000.0),
+		Conversion: divideBy(1000.0 * 1000.0),
 	},
 	"mongodb-vsize.megabytes": {
 		Name:       "mongodb-memory-vsize",
 		Unit:       "B",
-		Conversion: divide_by(1000.0 * 1000.0),
+		Conversion: divideBy(1000.0 * 1000.0),
 	},
 	"mongodb-percent.cache.dirty ": {
 		Name: "mongodb-cache-dirty",
@@ -631,14 +632,14 @@ var translateMap = map[string]Translation{
 		Unit: "percent",
 		// total milliseconds in, so divide by 10 to get
 		// 100 x seconds, then differentate (.cntr) to get percentage
-		Conversion: divide_by(10.0),
+		Conversion: divideBy(10.0),
 	},
 	"postgresql-blk.write.time": {
 		Name: "postgres-blk-write-time.cntr",
 		Unit: "percent",
 		// total milliseconds in, so divide by 10 to get
 		// 100 x seconds, then differentate (.cntr) to get percentage
-		Conversion: divide_by(10.0),
+		Conversion: divideBy(10.0),
 	},
 	"Logins/sec | General Statistics-value": {
 		Name: "mssql-logins",
@@ -679,22 +680,22 @@ var translateMap = map[string]Translation{
 	"Database Cache Memory (KB) | Memory Manager-value": {
 		Name:       "mssql-memory-db-cache",
 		Unit:       "B",
-		Conversion: divide_by(1024.0),
+		Conversion: divideBy(1024.0),
 	},
 	"Log Pool Memory (KB) | Memory Manager-value": {
 		Name:       "mssql-memory-log-pool",
 		Unit:       "B",
-		Conversion: divide_by(1024.0),
+		Conversion: divideBy(1024.0),
 	},
 	"Optimizer Memory (KB) | Memory Manager-value": {
 		Name:       "mssql-memory-optimizer",
 		Unit:       "B",
-		Conversion: divide_by(1024.0),
+		Conversion: divideBy(1024.0),
 	},
 	"SQL Cache Memory (KB) | Memory Manager-value": {
 		Name:       "mssql-memory-sql-cache",
 		Unit:       "B",
-		Conversion: divide_by(1024.0),
+		Conversion: divideBy(1024.0),
 	},
 	"Transactions/sec | _Total | Databases-value": {
 		Name: "mssql-transactions",
@@ -879,12 +880,12 @@ var translateMap = map[string]Translation{
 	"vault_runtime_gc_pause_ns-mean": {
 		Name:       "vault-gc-pause-time-avg",
 		Unit:       "s",
-		Conversion: divide_by(1000 * 1000 * 1000),
+		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"vault_runtime_total_gc_pause_ns-value": {
 		Name:       "vault-gc-pause-time.cntr",
 		Unit:       "s",
-		Conversion: divide_by(1000 * 1000 * 1000),
+		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"vault_runtime_total_gc_runs-value": {
 		Name: "vault-gc-runs.cntr",
@@ -1197,47 +1198,47 @@ var translateMap = map[string]Translation{
 	"kafka.network-RequestMetrics.Count.Produce.TotalTimeMs": {
 		Name:       "kafka-produce-time-total.cntr",
 		Unit:       "s",
-		Conversion: divide_by(1000),
+		Conversion: divideBy(1000),
 	},
 	"kafka.network-RequestMetrics.Count.FetchConsumer.TotalTimeMs": {
 		Name:       "kafka-fetch-consumer-time-total",
 		Unit:       "s",
-		Conversion: divide_by(1000),
+		Conversion: divideBy(1000),
 	},
 	"kafka.network-RequestMetrics.Count.FetchFollower.TotalTimeMs": {
 		Name:       "kafka-fetch-follower-time-total",
 		Unit:       "s",
-		Conversion: divide_by(1000),
+		Conversion: divideBy(1000),
 	},
 	"kafka.network-RequestMetrics.Min.Produce.TotalTimeMs": {
 		Name:       "kafka-produce-time-total-min",
 		Unit:       "s",
-		Conversion: divide_by(1000),
+		Conversion: divideBy(1000),
 	},
 	"kafka.network-RequestMetrics.Max.Produce.TotalTimeMs": {
 		Name:       "kafka-produce-time-total-max",
 		Unit:       "s",
-		Conversion: divide_by(1000),
+		Conversion: divideBy(1000),
 	},
 	"kafka.network-RequestMetrics.Min.FetchConsumer.TotalTimeMs": {
 		Name:       "kafka-fetch-consumer-time-total-min",
 		Unit:       "s",
-		Conversion: divide_by(1000),
+		Conversion: divideBy(1000),
 	},
 	"kafka.network-RequestMetrics.Max.FetchConsumer.TotalTimeMs": {
 		Name:       "kafka-fetch-consumer-time-total-max",
 		Unit:       "s",
-		Conversion: divide_by(1000),
+		Conversion: divideBy(1000),
 	},
 	"kafka.network-RequestMetrics.Min.FetchFollower.TotalTimeMs": {
 		Name:       "kafka-fetch-follower-time-total-min",
 		Unit:       "s",
-		Conversion: divide_by(1000),
+		Conversion: divideBy(1000),
 	},
 	"kafka.network-RequestMetrics.Max.FetchFollower.TotalTimeMs": {
 		Name:       "kafka-fetch-follower-time-total-max",
 		Unit:       "s",
-		Conversion: divide_by(1000),
+		Conversion: divideBy(1000),
 	},
 	"kafka.server-Fetch.queue-size": {
 		Name: "kafka-fetch-queue-size",
@@ -1318,7 +1319,7 @@ var translateMap = map[string]Translation{
 	"kafka.server-replica-fetcher-metrics.io-time-ns-avg": {
 		Name:       "kafka-replica-fetcher-io-time",
 		Unit:       "s",
-		Conversion: divide_by(1000 * 1000 * 1000),
+		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"kafka.server-replica-fetcher-metrics.io-wait-ratio": {
 		Name: "kafka-replica-fetcher-io-wait-ratio",
@@ -1327,7 +1328,7 @@ var translateMap = map[string]Translation{
 	"kafka.server-replica-fetcher-metrics.io-wait-time-ns-avg": {
 		Name:       "kafka-replica-fetcher-io-wait-time",
 		Unit:       "s",
-		Conversion: divide_by(1000 * 1000 * 1000),
+		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"kafka.server-replica-fetcher-metrics.network-io-rate": {
 		Name: "kafka-replica-fetcher-network-io-rate",
@@ -1388,7 +1389,7 @@ var translateMap = map[string]Translation{
 	"kafka.server-socket-server-metrics.io-time-ns-avg": {
 		Name:       "kafka-socket-avg-io-time",
 		Unit:       "s",
-		Conversion: divide_by(1000 * 1000 * 1000),
+		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"kafka.server-socket-server-metrics.io-wait-ratio": {
 		Name: "kafka-socket-io-wait",
@@ -1397,7 +1398,7 @@ var translateMap = map[string]Translation{
 	"kafka.server-socket-server-metrics.io-wait-time-ns-avg": {
 		Name:       "kafka-socket-io-wait-time",
 		Unit:       "s",
-		Conversion: divide_by(1000 * 1000 * 1000),
+		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"kafka.server-socket-server-metrics.network-io-rate": {
 		Name: "kafka-socket-network-io-rate",
@@ -1520,341 +1521,342 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"influxdb-n.shards": {
-	  Name: "influxdb-shards",
-	  Unit: "count",
+		Name: "influxdb-shards",
+		Unit: "count",
 	},
 	"influxdb_cq-queryFail": {
-	  Name: "influxdb-continuous-queries-fail.cntr",
-	  Unit: "count",
+		Name: "influxdb-continuous-queries-fail.cntr",
+		Unit: "count",
 	},
 	"influxdb_cq-queryOk": {
-	  Name: "influxdb-continuous-queries-ok.cntr",
-	  Unit: "count",
+		Name: "influxdb-continuous-queries-ok.cntr",
+		Unit: "count",
 	},
 	"influxdb_database-numMeasurements": {
-	  Name: "influxdb-database-measurements",
-	  Unit: "count",
+		Name: "influxdb-database-measurements",
+		Unit: "count",
 	},
 	"influxdb_database-numSeries": {
-	  Name: "influxdb-database-series",
-	  Unit: "count",
+		Name: "influxdb-database-series",
+		Unit: "count",
 	},
 	"influxdb_httpd-authFail": {
-	  Name: "influxdb-auth-failure",
-	  Unit: "count",
+		Name: "influxdb-auth-failure",
+		Unit: "count",
 	},
 	"influxdb_httpd-clientError": {
-	  Name: "influxdb-client-error",
-	  Unit: "count",
+		Name: "influxdb-client-error",
+		Unit: "count",
 	},
 	"influxdb_httpd-pingReq": {
-	  Name: "influxdb-ping-requests",
-	  Unit: "count",
+		Name: "influxdb-ping-requests",
+		Unit: "count",
 	},
 	"influxdb_httpd-pointsWrittenDropped": {
-	  Name: "influxdb-points-written-dropped",
-	  Unit: "count",
+		Name: "influxdb-points-written-dropped",
+		Unit: "count",
 	},
 	"influxdb_httpd-pointsWrittenFail": {
-	  Name: "influxdb-points-written-fail",
-	  Unit: "count",
+		Name: "influxdb-points-written-fail",
+		Unit: "count",
 	},
 	"influxdb_httpd-pointsWrittenOK": {
-	  Name: "influxdb-points-written-ok",
-	  Unit: "count",
+		Name: "influxdb-points-written-ok",
+		Unit: "count",
 	},
 	"influxdb_httpd-queryReq": {
-	  Name: "influxdb-query-request",
-	  Unit: "count",
+		Name: "influxdb-query-request",
+		Unit: "count",
 	},
 	"influxdb_httpd-queryReqDurationNs": {
-	  Name: "influxdb-query-request-duration",
-	  Unit: "s",
-	  Conversion: divide_by(1000 * 1000 * 1000),
+		Name:       "influxdb-query-request-duration",
+		Unit:       "s",
+		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"influxdb_httpd-queryRespBytes": {
-	  Name: "influxdb-query-response-size",
-	  Unit: "B",
+		Name: "influxdb-query-response-size",
+		Unit: "B",
 	},
 	"influxdb_httpd-recoveredPanics": {
-	  Name: "influxdb-recovered-panics",
-	  Unit: "count",
+		Name: "influxdb-recovered-panics",
+		Unit: "count",
 	},
 	"influxdb_httpd-req": {
-	  Name: "influxdb-requests",
-	  Unit: "count",
+		Name: "influxdb-requests",
+		Unit: "count",
 	},
 	"influxdb_httpd-reqActive": {
-	  Name: "influxdb-active-requests",
-	  Unit: "count",
+		Name: "influxdb-active-requests",
+		Unit: "count",
 	},
 	"influxdb_httpd-reqDurationNs": {
-	  Name: "influxdb-requests-duration",
-	  Unit: "s",
-	  Conversion: divide_by(1000 * 1000 * 1000),
+		Name:       "influxdb-requests-duration",
+		Unit:       "s",
+		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"influxdb_httpd-serverError": {
-	  Name: "influxdb-server-errors",
-	  Unit: "count",
+		Name: "influxdb-server-errors",
+		Unit: "count",
 	},
 	"influxdb_httpd-statusReq": {
-	  Name: "influxdb-status-requests",
-	  Unit: "count",
+		Name: "influxdb-status-requests",
+		Unit: "count",
 	},
 	"influxdb_httpd-writeReq": {
-	  Name: "influxdb-write-requests",
-	  Unit: "count",
+		Name: "influxdb-write-requests",
+		Unit: "count",
 	},
 	"influxdb_httpd-writeReqActive": {
-	  Name: "influxdb-write-requests-active",
-	  Unit: "count",
+		Name: "influxdb-write-requests-active",
+		Unit: "count",
 	},
 	"influxdb_httpd-writeReqBytes": {
-	  Name: "influxdb-write-requests",
-	  Unit: "B",
+		Name: "influxdb-write-requests",
+		Unit: "B",
 	},
 	"influxdb_httpd-writeReqDurationNs": {
-	  Name: "influxdb-write-requests-duration",
-	  Unit: "s",
-	  Conversion: divide_by(1000 * 1000 * 1000),
+		Name:       "influxdb-write-requests-duration",
+		Unit:       "s",
+		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"influxdb_memstats-sys": {
-	  Name: "influxdb-memstats-sys",
-	  Unit: "B",
+		Name: "influxdb-memstats-sys",
+		Unit: "B",
 	},
 	"influxdb_memstats-total.alloc": {
-	  Name: "influxdb-memstats-total-allocated",
-	  Unit: "B",
+		Name: "influxdb-memstats-total-allocated",
+		Unit: "B",
 	},
 	"influxdb_queryExecutor-queriesActive": {
-	  Name: "influxdb-queries-active",
-	  Unit: "count",
+		Name: "influxdb-queries-active",
+		Unit: "count",
 	},
 	"influxdb_queryExecutor-queriesExecuted": {
-	  Name: "influxdb-queries-executed",
-	  Unit: "count",
+		Name: "influxdb-queries-executed",
+		Unit: "count",
 	},
 	"influxdb_queryExecutor-queriesFinished": {
-	  Name: "influxdb-queries-finished",
-	  Unit: "count",
+		Name: "influxdb-queries-finished",
+		Unit: "count",
 	},
 	"influxdb_queryExecutor-queryDurationNs": {
-	  Name: "influxdb-query-duration",
-	  Unit: "s",
-	  Conversion: divide_by(1000 * 1000 * 1000),
+		Name:       "influxdb-query-duration",
+		Unit:       "s",
+		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"influxdb_queryExecutor-recoveredPanics": {
-	  Name: "influxdb-queet-recovered-panics",
-	  Unit: "count",
+		Name: "influxdb-queet-recovered-panics",
+		Unit: "count",
 	},
 	"influxdb_runtime-Alloc": {
-	  Name: "influxdb-runtime-alloc",
-	  Unit: "count",
+		Name: "influxdb-runtime-alloc",
+		Unit: "count",
 	},
 	"influxdb_runtime-Frees": {
-	  Name: "influxdb-runtime-frees",
-	  Unit: "count",
+		Name: "influxdb-runtime-frees",
+		Unit: "count",
 	},
 	"influxdb_runtime-HeapAlloc": {
-	  Name: "influxdb-runtime-heal-alloc",
-	  Unit: "count",
+		Name: "influxdb-runtime-heal-alloc",
+		Unit: "count",
 	},
 	"influxdb_runtime-HeapIdle": {
-	  Name: "influxdb-runtime-heal-idle",
-	  Unit: "count",
+		Name: "influxdb-runtime-heal-idle",
+		Unit: "count",
 	},
 	"influxdb_runtime-HeapInUse": {
-	  Name: "influxdb-runtime-heap-inuse",
-	  Unit: "count",
+		Name: "influxdb-runtime-heap-inuse",
+		Unit: "count",
 	},
 	"influxdb_runtime-HeapObjects": {
-	  Name: "influxdb-runtime-heap-objects",
-	  Unit: "count",
+		Name: "influxdb-runtime-heap-objects",
+		Unit: "count",
 	},
 	"influxdb_runtime-HeapReleased": {
-	  Name: "influxdb-runtime-heap-released",
-	  Unit: "count",
+		Name: "influxdb-runtime-heap-released",
+		Unit: "count",
 	},
 	"influxdb_runtime-HeapSys": {
-	  Name: "influxdb-runtime-heap-sys",
-	  Unit: "count",
+		Name: "influxdb-runtime-heap-sys",
+		Unit: "count",
 	},
 	"influxdb_runtime-Lookups": {
-	  Name: "influxdb-runtime-lookups",
-	  Unit: "count",
+		Name: "influxdb-runtime-lookups",
+		Unit: "count",
 	},
 	"influxdb_runtime-Mallocs": {
-	  Name: "influxdb-runtime-mallocs",
-	  Unit: "count",
+		Name: "influxdb-runtime-mallocs",
+		Unit: "count",
 	},
 	"influxdb_runtime-PauseTotalNs": {
-	  Name: "influxdb-runtime-pause-total",
-	  Unit: "s",
-	  Conversion: divide_by(1000 * 1000 * 1000),
+		Name:       "influxdb-runtime-pause-total",
+		Unit:       "s",
+		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"influxdb_runtime-Sys": {
-	  Name: "influxdb-runtime-sys",
-	  Unit: "count",
+		Name: "influxdb-runtime-sys",
+		Unit: "count",
 	},
 	"influxdb_runtime-TotalAlloc": {
-	  Name: "influxdb-runtime-totalalloc",
-	  Unit: "count",
+		Name: "influxdb-runtime-totalalloc",
+		Unit: "count",
 	},
 	"influxdb_shard-diskBytes": {
-	  Name: "influxdb-shard-disk",
-	  Unit: "B",
+		Name: "influxdb-shard-disk",
+		Unit: "B",
 	},
 	"influxdb_shard-fieldsCreate": {
-	  Name: "influxdb-shard-fields-create",
-	  Unit: "count",
+		Name: "influxdb-shard-fields-create",
+		Unit: "count",
 	},
 	"influxdb_shard-seriesCreate": {
-	  Name: "influxdb-shard-series-create",
-	  Unit: "count",
+		Name: "influxdb-shard-series-create",
+		Unit: "count",
 	},
 	"influxdb_shard-writeBytes": {
-	  Name: "influxdb-shard-write",
-	  Unit: "B",
+		Name: "influxdb-shard-write",
+		Unit: "B",
 	},
 	"influxdb_shard-writePointsDropped": {
-	  Name: "influxdb-shard-write-points-dropped",
-	  Unit: "count",
+		Name: "influxdb-shard-write-points-dropped",
+		Unit: "count",
 	},
 	"influxdb_shard-writePointsErr": {
-	  Name: "influxdb-shard-write-points-error",
-	  Unit: "count",
+		Name: "influxdb-shard-write-points-error",
+		Unit: "count",
 	},
 	"influxdb_shard-writePointsOk": {
-	  Name: "influxdb-shard-write-points-ok",
-	  Unit: "count",
+		Name: "influxdb-shard-write-points-ok",
+		Unit: "count",
 	},
 	"influxdb_shard-writeReq": {
-	  Name: "influxdb-shard-write-requests",
-	  Unit: "count",
+		Name: "influxdb-shard-write-requests",
+		Unit: "count",
 	},
 	"influxdb_shard-writeReqErr": {
-	  Name: "influxdb-shard-write-requests-error",
-	  Unit: "count",
+		Name: "influxdb-shard-write-requests-error",
+		Unit: "count",
 	},
 	"influxdb_shard-writeReqOk": {
-	  Name: "influxdb-shard-write-requests-ok",
-	  Unit: "count",
+		Name: "influxdb-shard-write-requests-ok",
+		Unit: "count",
 	},
 	"influxdb_subscriber-createFailures": {
-	  Name: "influxdb-subscriber-create-failures",
-	  Unit: "count",
+		Name: "influxdb-subscriber-create-failures",
+		Unit: "count",
 	},
 	"influxdb_subscriber-pointsWritten": {
-	  Name: "influxdb-subscriber-points-written",
-	  Unit: "count",
+		Name: "influxdb-subscriber-points-written",
+		Unit: "count",
 	},
 	"influxdb_subscriber-writeFailures": {
-	  Name: "influxdb-subscriber-write-failures",
-	  Unit: "count",
+		Name: "influxdb-subscriber-write-failures",
+		Unit: "count",
 	},
 	"influxdb_tsm1_cache-WALCompactionTimeMs": {
-	  Name: "influxdb-cache-wal-compaction",
-	  Unit: "s",
-	  Conversion: divide_by(1000.0),
+		Name:       "influxdb-cache-wal-compaction",
+		Unit:       "s",
+		Conversion: divideBy(1000.0),
 	},
 	"influxdb_tsm1_cache-cacheAgeMs": {
-	  Name: "influxdb-cache-age",
-	  Unit: "s",
-	  Conversion: divide_by(1000.0),
+		Name:       "influxdb-cache-age",
+		Unit:       "s",
+		Conversion: divideBy(1000.0),
 	},
 	"influxdb_tsm1_cache-cachedBytes": {
-	  Name: "influxdb-cache-cached",
-	  Unit: "B",
+		Name: "influxdb-cache-cached",
+		Unit: "B",
 	},
 	"influxdb_tsm1_cache-diskBytes": {
-	  Name: "influxdb-cache-disk",
-	  Unit: "B",
+		Name: "influxdb-cache-disk",
+		Unit: "B",
 	},
 	"influxdb_tsm1_cache-memBytes": {
-	  Name: "influxdb-cache-memory",
-	  Unit: "B",
+		Name: "influxdb-cache-memory",
+		Unit: "B",
 	},
 	"influxdb_tsm1_cache-snapshotCount": {
-	  Name: "influxdb-cache-snapshot",
-	  Unit: "count",
+		Name: "influxdb-cache-snapshot",
+		Unit: "count",
 	},
 	"influxdb_tsm1_cache-writeDropped": {
-	  Name: "influxdb-cache-write-dropped",
-	  Unit: "count",
+		Name: "influxdb-cache-write-dropped",
+		Unit: "count",
 	},
 	"influxdb_tsm1_cache-writeErr": {
-	  Name: "influxdb-cache-write-error",
-	  Unit: "count",
+		Name: "influxdb-cache-write-error",
+		Unit: "count",
 	},
 	"influxdb_tsm1_cache-writeOk": {
-	  Name: "influxdb-cache-write-ok",
-	  Unit: "count",
+		Name: "influxdb-cache-write-ok",
+		Unit: "count",
 	},
 	"influxdb_tsm1_filestore-diskBytes": {
-	  Name: "influxdb-filestore-disk",
-	  Unit: "B",
+		Name: "influxdb-filestore-disk",
+		Unit: "B",
 	},
 	"influxdb_tsm1_filestore-numFiles": {
-	  Name: "influxdb-filestore-num-files",
-	  Unit: "count",
+		Name: "influxdb-filestore-num-files",
+		Unit: "count",
 	},
 	"influxdb_tsm1_wal-currentSegmentDiskBytes": {
-	  Name: "influxdb-current-segment-disk",
-	  Unit: "B",
+		Name: "influxdb-current-segment-disk",
+		Unit: "B",
 	},
 	"influxdb_tsm1_wal-oldSegmentsDiskBytes": {
-	  Name: "influxdb-old-segments-disk",
-	  Unit: "B",
+		Name: "influxdb-old-segments-disk",
+		Unit: "B",
 	},
 	"influxdb_tsm1_wal-writeErr": {
-	  Name: "influxdb-wal-write-error",
-	  Unit: "count",
+		Name: "influxdb-wal-write-error",
+		Unit: "count",
 	},
 	"influxdb_tsm1_wal-writeOk": {
-	  Name: "influxdb-wal-write-ok",
-	  Unit: "count",
+		Name: "influxdb-wal-write-ok",
+		Unit: "count",
 	},
 	"influxdb_write-pointReq": {
-	  Name: "influxdb-write-point-requests",
-	  Unit: "count",
+		Name: "influxdb-write-point-requests",
+		Unit: "count",
 	},
 	"influxdb_write-pointReqLocal": {
-	  Name: "influxdb-write-point-requests-local",
-	  Unit: "count",
+		Name: "influxdb-write-point-requests-local",
+		Unit: "count",
 	},
 	"influxdb_write-req": {
-	  Name: "influxdb-write-requests",
-	  Unit: "count",
+		Name: "influxdb-write-requests",
+		Unit: "count",
 	},
 	"influxdb_write-writeDrop": {
-	  Name: "influxdb-write-drop",
-	  Unit: "count",
+		Name: "influxdb-write-drop",
+		Unit: "count",
 	},
 	"influxdb_write-writeError": {
-	  Name: "influxdb-write-error",
-	  Unit: "count",
+		Name: "influxdb-write-error",
+		Unit: "count",
 	},
 	"influxdb_write-writeOk": {
-	  Name: "influxdb-write-ok",
-	  Unit: "count",
+		Name: "influxdb-write-ok",
+		Unit: "count",
 	},
 	"influxdb_write-writeTimeout": {
-	  Name: "influxdb-write-timeout",
-	  Unit: "count",
+		Name: "influxdb-write-timeout",
+		Unit: "count",
 	},
 }
 
+// Translation bares the convertion info from the source to the CMP metric
 type Translation struct {
 	Name       string
 	Unit       string
 	Conversion func(interface{}) interface{}
 }
 
-func subtract_from_100_percent(value interface{}) interface{} {
+func subtractFrom100Percent(value interface{}) interface{} {
 	return (100.0 - value.(float64))
 }
 
-func divide_by(divisor float64) func(value interface{}) interface{} {
+func divideBy(divisor float64) func(value interface{}) interface{} {
 	return func(value interface{}) interface{} {
 		switch v := value.(type) {
 		case int64:
@@ -1867,7 +1869,7 @@ func divide_by(divisor float64) func(value interface{}) interface{} {
 	}
 }
 
-func es_cluster_health(status interface{}) interface{} {
+func esClusterHealth(status interface{}) interface{} {
 	switch status.(string) {
 	case "green":
 		return 0.0
@@ -1880,26 +1882,30 @@ func es_cluster_health(status interface{}) interface{} {
 	}
 }
 
-type CmpData struct {
+// PostMetrics is the payload sent to the CMP metrics API
+type PostMetrics struct {
 	MonitoringSystem string      `json:"monitoring_system"`
-	ResourceId       string      `json:"resource_id"`
-	Metrics          []CmpMetric `json:"metrics"`
+	ResourceID       string      `json:"resource_id"`
+	Metrics          []DataPoint `json:"metrics"`
 }
 
-type CmpMetric struct {
+// DataPoint represents a CMP metric data point
+type DataPoint struct {
 	Metric string `json:"metric"`
 	Unit   string `json:"unit"`
 	Value  string `json:"value"`
 	Time   string `json:"time"`
 }
 
-func (data *CmpData) AddMetric(item CmpMetric) []CmpMetric {
+// AddMetric appends a metric data point to the list of metrics
+func (data *PostMetrics) AddMetric(item DataPoint) []DataPoint {
 	data.Metrics = append(data.Metrics, item)
 	return data.Metrics
 }
 
-func (a *Cmp) Connect() error {
-	if a.ApiUser == "" || a.ApiKey == "" || a.CmpInstance == "" || a.ResourceId == "" {
+// Connect makes a connection to CMP
+func (a *CMP) Connect() error {
+	if a.APIUser == "" || a.APIKey == "" || a.CMPInstance == "" || a.ResourceID == "" {
 		return fmt.Errorf("api_user, api_key, resource_id and cmp_instance are required fields for cmp output")
 	}
 	tr := &http.Transport{
@@ -1913,13 +1919,14 @@ func (a *Cmp) Connect() error {
 	return nil
 }
 
-func (a *Cmp) Write(metrics []telegraf.Metric) error {
+// Write sends the metrics to CMP
+func (a *CMP) Write(metrics []telegraf.Metric) error {
 	if len(metrics) == 0 {
 		return nil
 	}
-	cmp_data := &CmpData{
+	payload := &PostMetrics{
 		MonitoringSystem: "telegraf",
-		ResourceId:       a.ResourceId,
+		ResourceID:       a.ResourceID,
 	}
 
 	for _, m := range metrics {
@@ -1931,32 +1938,32 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 		suffix := ""
 		cpu := m.Tags()["cpu"]
 		path := m.Tags()["path"]
-		haproxy_service := m.Tags()["proxy"] + "_" + m.Tags()["sv"]
-		container_name := m.Tags()["com.docker.compose.service"]
-		disk_name := m.Tags()["name"]
+		haproxyService := m.Tags()["proxy"] + "_" + m.Tags()["sv"]
+		containerName := m.Tags()["com.docker.compose.service"]
+		diskName := m.Tags()["name"]
 		db := m.Tags()["db"]
-		kafka_topic := m.Tags()["topic"]
-		kafka_broker_host := m.Tags()["brokerHost"]
-		mongodb_db_name := m.Tags()["db_name"]
+		kafkaTopic := m.Tags()["topic"]
+		kafkaBrokerHost := m.Tags()["brokerHost"]
+		mongoDBName := m.Tags()["db_name"]
 
 		if len(cpu) > 0 && cpu != "cpu-total" {
 			suffix = cpu[3:]
 		} else if len(path) > 0 {
 			suffix = path
-		} else if len(container_name) > 0 {
-			suffix = container_name
-		} else if m.Name() == "haproxy" && len(haproxy_service) > 0 {
-			suffix = haproxy_service
-		} else if m.Name() == "diskio" && len(disk_name) > 0 {
-			suffix = disk_name
+		} else if len(containerName) > 0 {
+			suffix = containerName
+		} else if m.Name() == "haproxy" && len(haproxyService) > 0 {
+			suffix = haproxyService
+		} else if m.Name() == "diskio" && len(diskName) > 0 {
+			suffix = diskName
 		} else if m.Name() == "postgresql" && len(db) > 0 {
 			suffix = db
-		} else if strings.HasPrefix(m.Name(), "mongodb_") && len(mongodb_db_name) > 0 {
-			suffix = mongodb_db_name
-		} else if strings.HasPrefix(m.Name(), "kafka.") && len(kafka_topic) > 0 {
-			suffix = kafka_topic
-		} else if strings.HasPrefix(m.Name(), "kafka.") && len(kafka_broker_host) > 0 {
-			suffix = kafka_broker_host
+		} else if strings.HasPrefix(m.Name(), "mongodb_") && len(mongoDBName) > 0 {
+			suffix = mongoDBName
+		} else if strings.HasPrefix(m.Name(), "kafka.") && len(kafkaTopic) > 0 {
+			suffix = kafkaTopic
+		} else if strings.HasPrefix(m.Name(), "kafka.") && len(kafkaBrokerHost) > 0 {
+			suffix = kafkaBrokerHost
 		}
 
 		timestamp := m.Time().UTC().Format("2006-01-02T15:04:05.999999Z")
@@ -1968,16 +1975,16 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 			} else if strings.HasPrefix(k, "RequestMetrics.") {
 				k = fmt.Sprintf("%s.%s.%s", k, m.Tags()["request"], m.Tags()["name"])
 			}
-			metric_name := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
-			translation, found := translateMap[metric_name]
+			metricName := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
+			translation, found := translateMap[metricName]
 			if found {
-				cmp_name := translation.Name
+				cmpName := translation.Name
 				if len(suffix) > 0 {
-					if strings.HasSuffix(cmp_name, ".cntr") {
-						cmp_name = strings.TrimSuffix(cmp_name, ".cntr")
-						cmp_name += "." + suffix + ".cntr"
+					if strings.HasSuffix(cmpName, ".cntr") {
+						cmpName = strings.TrimSuffix(cmpName, ".cntr")
+						cmpName += "." + suffix + ".cntr"
 					} else {
-						cmp_name += "." + suffix
+						cmpName += "." + suffix
 					}
 
 				}
@@ -1988,65 +1995,69 @@ func (a *Cmp) Write(metrics []telegraf.Metric) error {
 				}
 
 				if a.Debug {
-					log.Printf("SEND: %s: %s %v", timestamp, cmp_name, v)
+					log.Printf("SEND: %s: %s %v", timestamp, cmpName, v)
 				}
-				cmp_data.AddMetric(CmpMetric{
-					Metric: cmp_name,
+				payload.AddMetric(DataPoint{
+					Metric: cmpName,
 					Unit:   translation.Unit,
 					Value:  fmt.Sprintf("%v", v),
 					Time:   timestamp,
 				})
 			} else if a.Debug {
-				log.Printf("Not Matched: %s %v", metric_name, v)
+				log.Printf("Not Matched: %s %v", metricName, v)
 			}
 		}
 	}
 
-	cmp_bytes, err := json.Marshal(cmp_data)
+	cmpBytes, err := json.Marshal(payload)
 	if err != nil {
-		return fmt.Errorf("unable to marshal TimeSeries, %s\n", err.Error())
+		return fmt.Errorf("unable to marshal TimeSeries, %s", err.Error())
 	}
-	req, err := http.NewRequest("POST", a.authenticatedUrl(), bytes.NewBuffer(cmp_bytes))
+	req, err := http.NewRequest("POST", a.authenticatedURL(), bytes.NewBuffer(cmpBytes))
 	if err != nil {
-		return fmt.Errorf("unable to create http.Request, %s\n", err.Error())
+		return fmt.Errorf("unable to create http.Request, %s", err.Error())
 	}
 	userAgent := fmt.Sprintf("telegraf/%s", findVersion())
 	req.Header.Add("User-Agent", userAgent)
 	req.Header.Add("Content-Type", "application/json")
-	req.SetBasicAuth(a.ApiUser, a.ApiKey)
+	req.SetBasicAuth(a.APIUser, a.APIKey)
 
 	resp, err := a.client.Do(req)
 	if err != nil {
-		return fmt.Errorf("error POSTing metrics, %s\n", err.Error())
+		return fmt.Errorf("error POSTing metrics, %s", err.Error())
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode > 209 {
-		return fmt.Errorf("received bad status code, %d\n", resp.StatusCode)
+		return fmt.Errorf("received bad status code, %d", resp.StatusCode)
 	}
 
 	return nil
 }
 
-func (a *Cmp) SampleConfig() string {
+// SampleConfig returns a sample plugin config
+func (a *CMP) SampleConfig() string {
 	return sampleConfig
 }
 
-func (a *Cmp) Description() string {
-	return "Configuration for Cmp Server to send metrics to."
+// Description returns the plugin description
+func (a *CMP) Description() string {
+	return "Configuration for CMP Server to send metrics to."
 }
 
-func (a *Cmp) authenticatedUrl() string {
+func (a *CMP) authenticatedURL() string {
 
-	return fmt.Sprintf("%s/metrics", a.CmpInstance)
+	return fmt.Sprintf("%s/metrics", a.CMPInstance)
 }
 
-func (a *Cmp) Close() error {
+// Close closes the connection
+func (a *CMP) Close() error {
+	a.client = nil
 	return nil
 }
 
 func init() {
 	outputs.Add("cmp", func() telegraf.Output {
-		return &Cmp{}
+		return &CMP{}
 	})
 }
