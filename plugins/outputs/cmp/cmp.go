@@ -22,6 +22,7 @@ type CMP struct {
 	ResourceID  string            `toml:"resource_id"`
 	CMPInstance string            `toml:"cmp_instance"`
 	Timeout     internal.Duration `toml:"timeout"`
+	Debug       bool              `toml:"debug"`
 
 	client  *http.Client
 	version string
