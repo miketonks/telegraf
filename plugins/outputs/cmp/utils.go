@@ -1,8 +1,8 @@
 package cmp
 
 import (
-	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"strings"
 )
@@ -18,17 +18,16 @@ func findVersion() string {
 		return version
 	}
 
+	version = versionUnknown
 	f, err := os.Open("/current_version")
 	if err != nil {
-		fmt.Println("Version file (/current_version) not found")
-		version = versionUnknown
+		log.Printf("W! [CMP] Version file (/current_version) not found, using version %q", version)
 		return version
 	}
 	defer f.Close()
 	b, err := ioutil.ReadAll(f)
 	if err != nil {
-		fmt.Println("Failed to read version file (/current_version)")
-		version = versionUnknown
+		log.Print("E! [CMP] Failed to read version file (/current_version)")
 		return version
 	}
 
@@ -36,10 +35,9 @@ func findVersion() string {
 	for _, l := range lines {
 		if strings.HasPrefix(l, "version: ") {
 			version = strings.TrimPrefix(l, "version: ")
-			return version
+			break
 		}
 	}
 
-	version = versionUnknown
 	return version
 }

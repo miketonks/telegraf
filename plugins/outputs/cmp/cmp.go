@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -21,9 +22,9 @@ type CMP struct {
 	ResourceID  string            `toml:"resource_id"`
 	CMPInstance string            `toml:"cmp_instance"`
 	Timeout     internal.Duration `toml:"timeout"`
-	Debug       bool              `toml:"debug"`
 
-	client *http.Client
+	client  *http.Client
+	version string
 }
 
 var sampleConfig = `
@@ -37,9 +38,6 @@ var sampleConfig = `
 
   # Connection timeout.
   # timeout = "5s"
-
-  # Print verbose debug messages to console
-  debug = false
 `
 
 var translateMap = map[string]Translation{
@@ -1906,7 +1904,10 @@ func (data *PostMetrics) AddMetric(item DataPoint) []DataPoint {
 // Connect makes a connection to CMP
 func (a *CMP) Connect() error {
 	if a.APIUser == "" || a.APIKey == "" || a.CMPInstance == "" || a.ResourceID == "" {
-		return fmt.Errorf("api_user, api_key, resource_id and cmp_instance are required fields for cmp output")
+		return fmt.Errorf(
+			"api_user, api_key, resource_id and cmp_instance " +
+				"are required fields for cmp output",
+		)
 	}
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
@@ -1930,10 +1931,7 @@ func (a *CMP) Write(metrics []telegraf.Metric) error {
 	}
 
 	for _, m := range metrics {
-
-		if a.Debug {
-			log.Printf("METRIC: %+v", m)
-		}
+		log.Printf("D! [CMP] processing: %+v", m)
 
 		suffix := ""
 		cpu := m.Tags()["cpu"]
@@ -1994,42 +1992,55 @@ func (a *CMP) Write(metrics []telegraf.Metric) error {
 					v = conversion(v)
 				}
 
-				if a.Debug {
-					log.Printf("SEND: %s: %s %v", timestamp, cmpName, v)
-				}
-				payload.AddMetric(DataPoint{
+				p := DataPoint{
 					Metric: cmpName,
 					Unit:   translation.Unit,
 					Value:  fmt.Sprintf("%v", v),
 					Time:   timestamp,
-				})
-			} else if a.Debug {
-				log.Printf("Not Matched: %s %v", metricName, v)
+				}
+				log.Printf("D! [CMP] created data point: %+v", p)
+				payload.AddMetric(p)
+
+			} else {
+				log.Printf("D! [CMP] skipping metric %s: not found in the translation map", metricName)
+
 			}
 		}
 	}
 
 	cmpBytes, err := json.Marshal(payload)
 	if err != nil {
-		return fmt.Errorf("unable to marshal TimeSeries, %s", err.Error())
+		return fmt.Errorf("unable to JSON-serialize the data points: %s", err.Error())
 	}
-	req, err := http.NewRequest("POST", a.authenticatedURL(), bytes.NewBuffer(cmpBytes))
+	req, err := http.NewRequest(
+		"POST",
+		a.authenticatedURL(),
+		bytes.NewBuffer(cmpBytes),
+	)
 	if err != nil {
-		return fmt.Errorf("unable to create http.Request, %s", err.Error())
+		return fmt.Errorf("unable to prepare the HTTP rrequest %s", err.Error())
 	}
-	userAgent := fmt.Sprintf("telegraf/%s", findVersion())
-	req.Header.Add("User-Agent", userAgent)
+	req.Header.Add("User-Agent", fmt.Sprintf("telegraf/%s", a.version))
 	req.Header.Add("Content-Type", "application/json")
 	req.SetBasicAuth(a.APIUser, a.APIKey)
 
+	log.Printf(
+		"I! [CMP] Sending %d data points generated from %d metrics to the API",
+		len(payload.Metrics),
+		len(metrics),
+	)
 	resp, err := a.client.Do(req)
 	if err != nil {
-		return fmt.Errorf("error POSTing metrics, %s", err.Error())
+		return fmt.Errorf("API call failed: %s", err.Error())
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode < 200 || resp.StatusCode > 209 {
-		return fmt.Errorf("received bad status code, %d", resp.StatusCode)
+	if resp.StatusCode != http.StatusOK {
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Printf("E! [CMP] failed to parse CMP response body: %s", err)
+		}
+		return fmt.Errorf("received a non-200 response: %s %s", resp.Status, body)
 	}
 
 	return nil
@@ -2046,7 +2057,6 @@ func (a *CMP) Description() string {
 }
 
 func (a *CMP) authenticatedURL() string {
-
 	return fmt.Sprintf("%s/metrics", a.CMPInstance)
 }
 
@@ -2058,6 +2068,8 @@ func (a *CMP) Close() error {
 
 func init() {
 	outputs.Add("cmp", func() telegraf.Output {
-		return &CMP{}
+		return &CMP{
+			version: findVersion(),
+		}
 	})
 }
