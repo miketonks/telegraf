@@ -1581,34 +1581,35 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"influxdb_queryExecutor-queryDurationNs": {
-	  Name: "influxdb-query-duration",
-	  Unit: "s",
-	  Conversion: divide_by(1000 * 1000 * 1000),
+		Name:       "influxdb-query-duration",
+		Unit:       "s",
+		Conversion: divide_by(1000 * 1000 * 1000),
 	},
 	"influxdb_queryExecutor-queriesActive": {
-	  Name: "influxdb-queries-active",
-	  Unit: "count",
+		Name: "influxdb-queries-active",
+		Unit: "count",
 	},
 	"influxdb_queryExecutor-queriesExecuted": {
-	  Name: "influxdb-queries-executed",
-	  Unit: "count",
+		Name: "influxdb-queries-executed",
+		Unit: "count",
 	},
 	"influxdb_queryExecutor-queriesFinished": {
-	  Name: "influxdb-queries-finished",
-	  Unit: "count",
+		Name: "influxdb-queries-finished",
+		Unit: "count",
 	},
 	"influxdb_queryExecutor-recoveredPanics": {
-	  Name: "influxdb-query-recovered-panics",
-	  Unit: "count",
+		Name: "influxdb-query-recovered-panics",
+		Unit: "count",
 	},
 	"influxdb_database-numMeasurements": {
-	  Name: "influxdb-database-measurements",
-	  Unit: "count",
+		Name: "influxdb-database-measurements",
+		Unit: "count",
 	},
 	"influxdb_database-numSeries": {
-	  Name: "influxdb-database-series",
-	  Unit: "count",
+		Name: "influxdb-database-series",
+		Unit: "count",
 	},
+}
 
 // Translation bears the convertion info from the source to the CMP metric
 type Translation struct {
