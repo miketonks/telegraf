@@ -1519,105 +1519,6 @@ var translateMap = map[string]Translation{
 		Name: "minio-http-requests-count",
 		Unit: "count",
 	},
-	"influxdb-n.shards": {
-	  Name: "influxdb-shards",
-	  Unit: "count",
-	},
-	"influxdb_cq-queryFail": {
-	  Name: "influxdb-continuous-queries-fail.cntr",
-	  Unit: "count",
-	},
-	"influxdb_cq-queryOk": {
-	  Name: "influxdb-continuous-queries-ok.cntr",
-	  Unit: "count",
-	},
-	"influxdb_database-numMeasurements": {
-	  Name: "influxdb-database-measurements",
-	  Unit: "count",
-	},
-	"influxdb_database-numSeries": {
-	  Name: "influxdb-database-series",
-	  Unit: "count",
-	},
-	"influxdb_httpd-authFail": {
-	  Name: "influxdb-auth-failure",
-	  Unit: "count",
-	},
-	"influxdb_httpd-clientError": {
-	  Name: "influxdb-client-error",
-	  Unit: "count",
-	},
-	"influxdb_httpd-pingReq": {
-	  Name: "influxdb-ping-requests",
-	  Unit: "count",
-	},
-	"influxdb_httpd-pointsWrittenDropped": {
-	  Name: "influxdb-points-written-dropped",
-	  Unit: "count",
-	},
-	"influxdb_httpd-pointsWrittenFail": {
-	  Name: "influxdb-points-written-fail",
-	  Unit: "count",
-	},
-	"influxdb_httpd-pointsWrittenOK": {
-	  Name: "influxdb-points-written-ok",
-	  Unit: "count",
-	},
-	"influxdb_httpd-queryReq": {
-	  Name: "influxdb-query-request",
-	  Unit: "count",
-	},
-	"influxdb_httpd-queryReqDurationNs": {
-	  Name: "influxdb-query-request-duration",
-	  Unit: "s",
-	  Conversion: divide_by(1000 * 1000 * 1000),
-	},
-	"influxdb_httpd-queryRespBytes": {
-	  Name: "influxdb-query-response-size",
-	  Unit: "B",
-	},
-	"influxdb_httpd-recoveredPanics": {
-	  Name: "influxdb-recovered-panics",
-	  Unit: "count",
-	},
-	"influxdb_httpd-req": {
-	  Name: "influxdb-requests",
-	  Unit: "count",
-	},
-	"influxdb_httpd-reqActive": {
-	  Name: "influxdb-active-requests",
-	  Unit: "count",
-	},
-	"influxdb_httpd-reqDurationNs": {
-	  Name: "influxdb-requests-duration",
-	  Unit: "s",
-	  Conversion: divide_by(1000 * 1000 * 1000),
-	},
-	"influxdb_httpd-serverError": {
-	  Name: "influxdb-server-errors",
-	  Unit: "count",
-	},
-	"influxdb_httpd-statusReq": {
-	  Name: "influxdb-status-requests",
-	  Unit: "count",
-	},
-	"influxdb_httpd-writeReq": {
-	  Name: "influxdb-write-requests",
-	  Unit: "count",
-	},
-	"influxdb_httpd-writeReqActive": {
-	  Name: "influxdb-write-requests-active",
-	  Unit: "count",
-	},
-	"influxdb_httpd-writeReqBytes": {
-	  Name: "influxdb-write-requests",
-	  Unit: "B",
-	},
-	"influxdb_httpd-writeReqDurationNs": {
-	  Name: "influxdb-write-requests-duration",
-	  Unit: "s",
-	  Conversion: divide_by(1000 * 1000 * 1000),
-	},
 	"influxdb_memstats-sys": {
 	  Name: "influxdb-memstats-sys",
 	  Unit: "B",
@@ -1625,27 +1526,6 @@ var translateMap = map[string]Translation{
 	"influxdb_memstats-total.alloc": {
 	  Name: "influxdb-memstats-total-allocated",
 	  Unit: "B",
-	},
-	"influxdb_queryExecutor-queriesActive": {
-	  Name: "influxdb-queries-active",
-	  Unit: "count",
-	},
-	"influxdb_queryExecutor-queriesExecuted": {
-	  Name: "influxdb-queries-executed",
-	  Unit: "count",
-	},
-	"influxdb_queryExecutor-queriesFinished": {
-	  Name: "influxdb-queries-finished",
-	  Unit: "count",
-	},
-	"influxdb_queryExecutor-queryDurationNs": {
-	  Name: "influxdb-query-duration",
-	  Unit: "s",
-	  Conversion: divide_by(1000 * 1000 * 1000),
-	},
-	"influxdb_queryExecutor-recoveredPanics": {
-	  Name: "influxdb-queet-recovered-panics",
-	  Unit: "count",
 	},
 	"influxdb_runtime-Alloc": {
 	  Name: "influxdb-runtime-alloc",
@@ -1700,149 +1580,35 @@ var translateMap = map[string]Translation{
 	  Name: "influxdb-runtime-totalalloc",
 	  Unit: "count",
 	},
-	"influxdb_shard-diskBytes": {
-	  Name: "influxdb-shard-disk",
-	  Unit: "B",
-	},
-	"influxdb_shard-fieldsCreate": {
-	  Name: "influxdb-shard-fields-create",
-	  Unit: "count",
-	},
-	"influxdb_shard-seriesCreate": {
-	  Name: "influxdb-shard-series-create",
-	  Unit: "count",
-	},
-	"influxdb_shard-writeBytes": {
-	  Name: "influxdb-shard-write",
-	  Unit: "B",
-	},
-	"influxdb_shard-writePointsDropped": {
-	  Name: "influxdb-shard-write-points-dropped",
-	  Unit: "count",
-	},
-	"influxdb_shard-writePointsErr": {
-	  Name: "influxdb-shard-write-points-error",
-	  Unit: "count",
-	},
-	"influxdb_shard-writePointsOk": {
-	  Name: "influxdb-shard-write-points-ok",
-	  Unit: "count",
-	},
-	"influxdb_shard-writeReq": {
-	  Name: "influxdb-shard-write-requests",
-	  Unit: "count",
-	},
-	"influxdb_shard-writeReqErr": {
-	  Name: "influxdb-shard-write-requests-error",
-	  Unit: "count",
-	},
-	"influxdb_shard-writeReqOk": {
-	  Name: "influxdb-shard-write-requests-ok",
-	  Unit: "count",
-	},
-	"influxdb_subscriber-createFailures": {
-	  Name: "influxdb-subscriber-create-failures",
-	  Unit: "count",
-	},
-	"influxdb_subscriber-pointsWritten": {
-	  Name: "influxdb-subscriber-points-written",
-	  Unit: "count",
-	},
-	"influxdb_subscriber-writeFailures": {
-	  Name: "influxdb-subscriber-write-failures",
-	  Unit: "count",
-	},
-	"influxdb_tsm1_cache-WALCompactionTimeMs": {
-	  Name: "influxdb-cache-wal-compaction",
+	"influxdb_queryExecutor-queryDurationNs": {
+	  Name: "influxdb-query-duration",
 	  Unit: "s",
-	  Conversion: divide_by(1000.0),
+	  Conversion: divide_by(1000 * 1000 * 1000),
 	},
-	"influxdb_tsm1_cache-cacheAgeMs": {
-	  Name: "influxdb-cache-age",
-	  Unit: "s",
-	  Conversion: divide_by(1000.0),
-	},
-	"influxdb_tsm1_cache-cachedBytes": {
-	  Name: "influxdb-cache-cached",
-	  Unit: "B",
-	},
-	"influxdb_tsm1_cache-diskBytes": {
-	  Name: "influxdb-cache-disk",
-	  Unit: "B",
-	},
-	"influxdb_tsm1_cache-memBytes": {
-	  Name: "influxdb-cache-memory",
-	  Unit: "B",
-	},
-	"influxdb_tsm1_cache-snapshotCount": {
-	  Name: "influxdb-cache-snapshot",
+	"influxdb_queryExecutor-queriesActive": {
+	  Name: "influxdb-queries-active",
 	  Unit: "count",
 	},
-	"influxdb_tsm1_cache-writeDropped": {
-	  Name: "influxdb-cache-write-dropped",
+	"influxdb_queryExecutor-queriesExecuted": {
+	  Name: "influxdb-queries-executed",
 	  Unit: "count",
 	},
-	"influxdb_tsm1_cache-writeErr": {
-	  Name: "influxdb-cache-write-error",
+	"influxdb_queryExecutor-queriesFinished": {
+	  Name: "influxdb-queries-finished",
 	  Unit: "count",
 	},
-	"influxdb_tsm1_cache-writeOk": {
-	  Name: "influxdb-cache-write-ok",
+	"influxdb_queryExecutor-recoveredPanics": {
+	  Name: "influxdb-query-recovered-panics",
 	  Unit: "count",
 	},
-	"influxdb_tsm1_filestore-diskBytes": {
-	  Name: "influxdb-filestore-disk",
-	  Unit: "B",
-	},
-	"influxdb_tsm1_filestore-numFiles": {
-	  Name: "influxdb-filestore-num-files",
+	"influxdb_database-numMeasurements": {
+	  Name: "influxdb-database-measurements",
 	  Unit: "count",
 	},
-	"influxdb_tsm1_wal-currentSegmentDiskBytes": {
-	  Name: "influxdb-current-segment-disk",
-	  Unit: "B",
-	},
-	"influxdb_tsm1_wal-oldSegmentsDiskBytes": {
-	  Name: "influxdb-old-segments-disk",
-	  Unit: "B",
-	},
-	"influxdb_tsm1_wal-writeErr": {
-	  Name: "influxdb-wal-write-error",
+	"influxdb_database-numSeries": {
+	  Name: "influxdb-database-series",
 	  Unit: "count",
 	},
-	"influxdb_tsm1_wal-writeOk": {
-	  Name: "influxdb-wal-write-ok",
-	  Unit: "count",
-	},
-	"influxdb_write-pointReq": {
-	  Name: "influxdb-write-point-requests",
-	  Unit: "count",
-	},
-	"influxdb_write-pointReqLocal": {
-	  Name: "influxdb-write-point-requests-local",
-	  Unit: "count",
-	},
-	"influxdb_write-req": {
-	  Name: "influxdb-write-requests",
-	  Unit: "count",
-	},
-	"influxdb_write-writeDrop": {
-	  Name: "influxdb-write-drop",
-	  Unit: "count",
-	},
-	"influxdb_write-writeError": {
-	  Name: "influxdb-write-error",
-	  Unit: "count",
-	},
-	"influxdb_write-writeOk": {
-	  Name: "influxdb-write-ok",
-	  Unit: "count",
-	},
-	"influxdb_write-writeTimeout": {
-	  Name: "influxdb-write-timeout",
-	  Unit: "count",
-	},
-}
 
 type Translation struct {
 	Name       string
