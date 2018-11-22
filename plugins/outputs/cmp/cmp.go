@@ -17,28 +17,28 @@ import (
 
 // CMP represents our plugin config
 type CMP struct {
-	APIUser     string            `toml:"api_user"`
-	APIKey      string            `toml:"api_key"`
-	ResourceID  string            `toml:"resource_id"`
-	CMPInstance string            `toml:"cmp_instance"`
-	Timeout     internal.Duration `toml:"timeout"`
-	Debug       bool              `toml:"debug"`
+	APIURL     string            `toml:"api_url"`
+	APIUser    string            `toml:"api_user"`
+	APIKey     string            `toml:"api_key"`
+	ResourceID string            `toml:"resource_id"`
+	Timeout    internal.Duration `toml:"timeout"`
+	UserAgent  string            `toml:"user_agent"`
 
-	client  *http.Client
-	version string
+	client *http.Client
 }
 
 var sampleConfig = `
-  # Cmp Api User and Key
-  api_user = "my-api-user" # required.
-  api_key = "my-api-key" # required.
-  resource_id = "1234"
+  ## CMP API URL and credentials are required
+  api_url = "https://dev.cmp.nflex.io/cmp/basic/api"
+  api_key = "api-key"
+  api_secret = "api-secret"
 
-  # Cmp Instance URL
-  cmp_instance = "https://yourcmpinstance" # required
+  ## CMP Resource UUID is also required
+  resource_id = "00000000-0000-0000-0000-000000000001"
 
-  # Connection timeout.
-  # timeout = "5s"
+  ## Request settings
+  timeout = "5s"
+  user_agent = ""
 `
 
 var translateMap = map[string]Translation{
@@ -1904,9 +1904,9 @@ func (data *PostMetrics) AddMetric(item DataPoint) []DataPoint {
 
 // Connect makes a connection to CMP
 func (a *CMP) Connect() error {
-	if a.APIUser == "" || a.APIKey == "" || a.CMPInstance == "" || a.ResourceID == "" {
+	if a.APIUser == "" || a.APIKey == "" || a.APIURL == "" || a.ResourceID == "" {
 		return fmt.Errorf(
-			"api_user, api_key, resource_id and cmp_instance " +
+			"api_url, api_user, api_key and resource_id" +
 				"are required fields for cmp output",
 		)
 	}
@@ -2021,7 +2021,11 @@ func (a *CMP) Write(metrics []telegraf.Metric) error {
 	if err != nil {
 		return fmt.Errorf("unable to prepare the HTTP request %s", err.Error())
 	}
-	req.Header.Add("User-Agent", fmt.Sprintf("telegraf/%s", a.version))
+
+	if a.UserAgent == "" {
+		a.UserAgent = "telegraf/unknown"
+	}
+	req.Header.Add("User-Agent", a.UserAgent)
 	req.Header.Add("Content-Type", "application/json")
 	req.SetBasicAuth(a.APIUser, a.APIKey)
 
@@ -2058,7 +2062,7 @@ func (a *CMP) Description() string {
 }
 
 func (a *CMP) authenticatedURL() string {
-	return fmt.Sprintf("%s/metrics", a.CMPInstance)
+	return fmt.Sprintf("%s/metrics", a.APIURL)
 }
 
 // Close closes the connection
@@ -2069,8 +2073,6 @@ func (a *CMP) Close() error {
 
 func init() {
 	outputs.Add("cmp", func() telegraf.Output {
-		return &CMP{
-			version: findVersion(),
-		}
+		return &CMP{}
 	})
 }
