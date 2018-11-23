@@ -55,6 +55,10 @@ var translateMap = map[string]Translation{
 		Name: "cpu-usage-system",
 		Unit: "percent",
 	},
+	"cpu-usage.iowait": {
+		Name: "cpu-usage-iowait",
+		Unit: "percent",
+	},
 	"mem-available.percent": {
 		Name:       "memory-usage",
 		Unit:       "percent",
@@ -74,34 +78,36 @@ var translateMap = map[string]Translation{
 		Unit: "percent",
 	},
 	"diskio-io.time": {
-		Name: "disk-io-time-percent.cntr",
-		Unit: "percent",
+		Name:    "disk-io-time-percent",
+		Unit:    "percent",
+		Counter: true,
 		// ms / 1000 for s then * 100 for percent
 		Conversion: divideBy(10.0),
 	},
 	"diskio-reads": {
-		Name: "disk-read-ops.cntr",
-		Unit: "count",
+		Name:    "disk-read-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"diskio-writes": {
-		Name: "disk-write-ops.cntr",
-		Unit: "count",
+		Name:    "disk-write-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"diskio-read.time": {
-		Name: "disk-read-time-percent.cntr",
-		Unit: "percent",
+		Name:    "disk-read-time-percent",
+		Counter: true,
+		Unit:    "percent",
 		// ms / 1000 for s then * 100 for percent
 		Conversion: divideBy(10.0),
 	},
 	"diskio-write.time": {
-		Name: "disk-write-time-percent.cntr",
-		Unit: "percent",
+		Name:    "disk-write-time-percent",
+		Counter: true,
+		Unit:    "percent",
 		// ms / 1000 for s then * 100 for percent
 		Conversion: divideBy(10.0),
 	},
-	//     "system-uptime": {
-	//         Name: "uptime",
-	//     },
 	"docker_container_cpu-usage.percent": {
 		Name: "docker-cpu-usage",
 		Unit: "percent",
@@ -120,128 +126,166 @@ var translateMap = map[string]Translation{
 		Unit: "",
 	},
 	"elasticsearch_cluster_health-active.shards": {
-		Name: "es-shards.active",
-		Unit: "",
+		Name:           "es-shards",
+		Specialisation: "active",
+		Unit:           "",
 	},
 	"elasticsearch_cluster_health-active.primary.shards": {
-		Name: "es-shards.primary",
-		Unit: "",
+		Name:           "es-shards",
+		Specialisation: "primary",
+		Unit:           "",
 	},
 	"elasticsearch_cluster_health-unassigned.shards": {
-		Name: "es-shards.unassigned",
-		Unit: "",
+		Name:           "es-shards",
+		Specialisation: "unassigned",
+		Unit:           "",
 	},
 	"elasticsearch_cluster_health-initializing.shards": {
-		Name: "es-shards.initializing",
-		Unit: "",
+		Name:           "es-shards",
+		Specialisation: "initializing",
+		Unit:           "",
 	},
 	"elasticsearch_cluster_health-relocating.shards": {
-		Name: "es-shards.relocating",
-		Unit: "",
+		Name:           "es-shards",
+		Specialisation: "relocating",
+		Unit:           "",
 	},
 	"elasticsearch_jvm-mem.heap.used.in.bytes": {
-		Name: "es-memory-usage.heap.used",
-		Unit: "B",
+		Name:           "es-memory-usage",
+		Specialisation: "heap.used",
+		Unit:           "B",
 	},
 	"elasticsearch_jvm-mem.heap.committed.in.bytes": {
-		Name: "es-memory-usage.heap.committed",
-		Unit: "B",
+		Name:           "es-memory-usage",
+		Specialisation: "heap.committed",
+		Unit:           "B",
 	},
 	"elasticsearch_jvm-mem.non.heap.used.in.bytes": {
-		Name: "es-memory-usage.nonheap.used",
-		Unit: "B",
+		Name:           "es-memory-usage",
+		Specialisation: "nonheap.used",
+		Unit:           "B",
 	},
 	"elasticsearch_jvm-mem.non.heap.committed.in.bytes": {
-		Name: "es-memory-usage.nonheap.committed",
-		Unit: "B",
+		Name:           "es-memory-usage",
+		Specialisation: "nonheap.committed",
+		Unit:           "B",
 	},
 	"elasticsearch_indices-search.query.total": {
-		Name: "es-search-requests.query.cntr",
-		Unit: "requests",
+		Name:           "es-search-requests",
+		Specialisation: "query",
+		Counter:        true,
+		Unit:           "requests",
 	},
 	"elasticsearch_indices-search.fetch.total": {
-		Name: "es-search-requests.fetch.cntr",
-		Unit: "requests",
+		Name:           "es-search-requests",
+		Specialisation: "fetch",
+		Counter:        true,
+		Unit:           "requests",
 	},
 	"elasticsearch_indices-search.query.current": {
-		Name: "es-current-search-requests.query",
-		Unit: "requests",
+		Name:           "es-current-search-requests",
+		Specialisation: "query",
+		Unit:           "requests",
 	},
 	"elasticsearch_indices-search.fetch.current": {
-		Name: "es-current-search-requests.fetch",
-		Unit: "requests",
+		Name:           "es-current-search-requests",
+		Specialisation: "fetch",
+		Unit:           "requests",
 	},
 	"elasticsearch_indices-search.query.time.in.millis": {
-		Name:       "es-search-time.query.cntr",
-		Unit:       "s",
-		Conversion: divideBy(1000.0),
+		Name:           "es-search-time",
+		Specialisation: "query",
+		Counter:        true,
+		Unit:           "s",
+		Conversion:     divideBy(1000.0),
 	},
 	"elasticsearch_indices-search.fetch.time.in.millis": {
-		Name:       "es-search-time.fetch.cntr",
-		Unit:       "s",
-		Conversion: divideBy(1000.0),
+		Name:           "es-search-time",
+		Specialisation: "fetch",
+		Counter:        true,
+		Unit:           "s",
+		Conversion:     divideBy(1000.0),
 	},
 	"elasticsearch_indices-get.total": {
-		Name: "es-get-requests.get.cntr",
-		Unit: "requests",
+		Name:           "es-get-requests",
+		Specialisation: "get",
+		Counter:        true,
+		Unit:           "requests",
 	},
 	"elasticsearch_indices-get.exists.total": {
-		Name: "es-get-requests.exists.cntr",
-		Unit: "requests",
+		Name:           "es-get-requests",
+		Specialisation: "exists",
+		Counter:        true,
+		Unit:           "requests",
 	},
 	"elasticsearch_indices-get.missing.total": {
-		Name: "es-get-requests.missing.cntr",
-		Unit: "requests",
+		Name:           "es-get-requests",
+		Specialisation: "missing",
+		Counter:        true,
+		Unit:           "requests",
 	},
 	"elasticsearch_indices-get.time.in.millis": {
-		Name:       "es-get-time.get",
-		Unit:       "s",
-		Conversion: divideBy(1000.0),
+		Name:           "es-get-time",
+		Specialisation: "get",
+		Unit:           "s",
+		Conversion:     divideBy(1000.0),
 	},
 	"elasticsearch_indices-get.exists.time.in.millis": {
-		Name:       "es-get-time.exists",
-		Unit:       "s",
-		Conversion: divideBy(1000.0),
+		Name:           "es-get-time",
+		Specialisation: "exists",
+		Unit:           "s",
+		Conversion:     divideBy(1000.0),
 	},
 	"elasticsearch_indices-get.missing.time.in.millis": {
-		Name:       "es-get-time.missing",
-		Unit:       "s",
-		Conversion: divideBy(1000.0),
+		Name:           "es-get-time",
+		Specialisation: "missing",
+		Unit:           "s",
+		Conversion:     divideBy(1000.0),
 	},
 	"elasticsearch_indices-indexing.index.total": {
-		Name: "es-index-requests.index.cntr",
-		Unit: "requests",
+		Name:           "es-index-requests",
+		Specialisation: "index",
+		Counter:        true,
+		Unit:           "requests",
 	},
 	"elasticsearch_indices-indexing.index.current": {
 		Name: "es-current-index-requests",
 		Unit: "requests",
 	},
 	"elasticsearch_indices-indexing.delete.total": {
-		Name: "es-index-requests.delete.cntr",
-		Unit: "requests",
+		Name:           "es-index-requests",
+		Specialisation: "delete",
+		Counter:        true,
+		Unit:           "requests",
 	},
 	"elasticsearch_indices-indexing.index.time.in.millis": {
-		Name:       "es-index-time.index",
-		Unit:       "s",
-		Conversion: divideBy(1000.0),
+		Name:           "es-index-time",
+		Specialisation: "index",
+		Counter:        true,
+		Unit:           "s",
+		Conversion:     divideBy(1000.0),
 	},
 	"elasticsearch_indices-indexing.delete.time.in.millis": {
-		Name:       "es-index-time.delete",
-		Unit:       "s",
-		Conversion: divideBy(1000.0),
+		Name:           "es-index-time",
+		Specialisation: "delete",
+		Unit:           "s",
+		Conversion:     divideBy(1000.0),
 	},
 	"elasticsearch_indices-flush.total.time.in.millis": {
-		Name:       "es-index-time.flush.cntr",
-		Unit:       "requests",
-		Conversion: divideBy(1000.0),
+		Name:           "es-index-time",
+		Specialisation: "flush",
+		Counter:        true,
+		Unit:           "requests",
+		Conversion:     divideBy(1000.0),
 	},
 	"etcd_server_has_leader-gauge": {
 		Name: "etcd-has-leader",
 		Unit: "count",
 	},
 	"etcd_server_leader_changes_seen_total-counter": {
-		Name: "etcd-leader-changes-seen.cntr",
-		Unit: "count",
+		Name:    "etcd-leader-changes-seen",
+		Counter: true,
+		Unit:    "count",
 	},
 	"etcd_server_proposals_committed_total-gauge": {
 		Name: "etcd-proposals-committed-total",
@@ -256,32 +300,39 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"etcd_server_proposals_failed_total-counter": {
-		Name: "etcd-proposals-failed.cntr",
-		Unit: "count",
+		Name:    "etcd-proposals-failed",
+		Counter: true,
+		Unit:    "count",
 	},
 	"etcd_network_peer_sent_bytes_total-counter": {
-		Name: "etcd-peer-sent-bytes.cntr",
-		Unit: "B",
+		Name:    "etcd-peer-sent-bytes",
+		Counter: true,
+		Unit:    "B",
 	},
 	"etcd_network_peer_received_bytes_total-counter": {
-		Name: "etcd-peer-received-bytes.cntr",
-		Unit: "B",
+		Name:    "etcd-peer-received-bytes",
+		Counter: true,
+		Unit:    "B",
 	},
 	"etcd_network_peer_sent_failures_total-counter": {
-		Name: "etcd-peer-sent-failures.cntr",
-		Unit: "count",
+		Name:    "etcd-peer-sent-failures",
+		Counter: true,
+		Unit:    "count",
 	},
 	"etcd_network_peer_received_failures_total-counter": {
-		Name: "etcd-peer-received-failures.cntr",
-		Unit: "count",
+		Name:    "etcd-peer-received-failures",
+		Counter: true,
+		Unit:    "count",
 	},
 	"etcd_network_client_grpc_sent_bytes_total-counter": {
-		Name: "etcd-grpc-client-sent-bytes.cntr",
-		Unit: "B",
+		Name:    "etcd-grpc-client-sent-bytes",
+		Counter: true,
+		Unit:    "B",
 	},
 	"etcd_network_client_grpc_received_bytes_total-counter": {
-		Name: "etcd-grpc-client-received-bytes.cntr",
-		Unit: "B",
+		Name:    "etcd-grpc-client-received-bytes",
+		Counter: true,
+		Unit:    "B",
 	},
 	"process_open_fds-gauge": {
 		Name: "etcd-open-file-descriptors",
@@ -292,24 +343,27 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"grpc_server_started_total-counter": {
-		Name: "etcd-server-started.cntr",
-		Unit: "count",
+		Name:    "etcd-server-started",
+		Counter: true,
+		Unit:    "count",
 	},
 	"etcd_debugging_mvcc_db_total_size_in_bytes-gauge": {
 		Name: "etcd-mvcc-db-size",
 		Unit: "B",
 	},
 	"etcd_debugging_mvcc_delete_total-counter": {
-		Name: "etcd-mvcc-deletes.cntr",
-		Unit: "count",
+		Name:    "etcd-mvcc-deletes",
+		Counter: true,
+		Unit:    "count",
 	},
 	"etcd_debugging_mvcc_keys_total-gauge": {
 		Name: "etcd-mvcc-keys",
 		Unit: "count",
 	},
 	"etcd_debugging_server_lease_expired_total-counter": {
-		Name: "etcd-server-lease-expired.cntr",
-		Unit: "count",
+		Name:    "etcd-server-lease-expired",
+		Counter: true,
+		Unit:    "count",
 	},
 	"process_resident_memory_bytes-gauge": {
 		Name: "etcd-resident-memory",
@@ -489,32 +543,39 @@ var translateMap = map[string]Translation{
 		Unit: "",
 	},
 	"mongodb-queries.per.sec": {
-		Name: "mongodb-ops.queries",
-		Unit: "operations/s",
+		Name:           "mongodb-ops",
+		Specialisation: "queries",
+		Unit:           "operations/s",
 	},
 	"mongodb-inserts.per.sec": {
-		Name: "mongodb-ops.inserts",
-		Unit: "operations/s",
+		Name:           "mongodb-ops",
+		Specialisation: "inserts",
+		Unit:           "operations/s",
 	},
 	"mongodb-updates.per.sec": {
-		Name: "mongodb-ops.updates",
-		Unit: "operations/s",
+		Name:           "mongodb-ops",
+		Specialisation: "updated",
+		Unit:           "operations/s",
 	},
 	"mongodb-deletes.per.sec": {
-		Name: "mongodb-ops.deletes",
-		Unit: "operations/s",
+		Name:           "mongodb-ops",
+		Specialisation: "deletes",
+		Unit:           "operations/s",
 	},
 	"mongodb-commands.per.sec": {
-		Name: "mongodb-ops.commands",
-		Unit: "operations/s",
+		Name:           "mongodb-ops",
+		Specialisation: "commands",
+		Unit:           "operations/s",
 	},
 	"mongodb-getmores.per.sec": {
-		Name: "mongodb-ops.getmores",
-		Unit: "operations/s",
+		Name:           "mongodb-ops",
+		Specialisation: "getmores",
+		Unit:           "operations/s",
 	},
 	"mongodb-flushes.per.sec": {
-		Name: "mongodb-ops.flushes",
-		Unit: "operations/s",
+		Name:           "mongodb-ops",
+		Specialisation: "flushes",
+		Unit:           "operations/s",
 	},
 	"mongodb-resident.megabytes": {
 		Name:       "mongodb-memory-resident",
@@ -575,67 +636,82 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"postgresql-xact.commit": {
-		Name: "postgres-xact-commit.cntr",
-		Unit: "count/s",
+		Name:    "postgres-xact-commit",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"postgresql-xact.rollback": {
-		Name: "postgres-xact-rollback.cntr",
-		Unit: "count/s",
+		Name:    "postgres-xact-rollback",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"postgresql-blks.read": {
-		Name: "postgres-blocks-read.cntr",
-		Unit: "count/s",
+		Name:    "postgres-blocks-read",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"postgresql-blks.hit": {
-		Name: "postgres-blocks-hit.cntr",
-		Unit: "count/s",
+		Name:    "postgres-blocks-hit",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"postgresql-tup.returned": {
-		Name: "postgres-tuples-returned.cntr",
-		Unit: "count/s",
+		Name:    "postgres-tuples-returned",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"postgresql-tup.fetched": {
-		Name: "postgres-tuples-fetched.cntr",
-		Unit: "count/s",
+		Name:    "postgres-tuples-fetched",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"postgresql-tup.inserted": {
-		Name: "postgres-tuples-inserted.cntr",
-		Unit: "count/s",
+		Name:    "postgres-tuples-inserted",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"postgresql-tup.updated": {
-		Name: "postgres-tuples-updated.cntr",
-		Unit: "count/s",
+		Name:    "postgres-tuples-updated",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"postgresql-tup.deleted": {
-		Name: "postgres-tuples-deleted.cntr",
-		Unit: "count/s",
+		Name:    "postgres-tuples-deleted",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"postgresql-conflicts": {
-		Name: "postgres-conflicts.cntr",
-		Unit: "count/s",
+		Name:    "postgres-conflicts",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"postgresql-temp.files": {
-		Name: "postgres-temp-files.cntr",
-		Unit: "files/s",
+		Name:    "postgres-temp-files",
+		Counter: true,
+		Unit:    "files/s",
 	},
 	"postgresql-temp.bytes": {
-		Name: "postgres-temp-bytes.cntr",
-		Unit: "B/s",
+		Name:    "postgres-temp-bytes",
+		Counter: true,
+		Unit:    "B/s",
 	},
 	"postgresql-deadlocks": {
-		Name: "postgres-deadlocks.cntr",
-		Unit: "count/s",
+		Name:    "postgres-deadlocks",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"postgresql-blk.read.time": {
-		Name: "postgres-block-read-time.cntr",
-		Unit: "percent",
+		Name:    "postgres-block-read-time",
+		Counter: true,
+		Unit:    "percent",
 		// total milliseconds in, so divide by 10 to get
 		// 100 x seconds, then differentate (.cntr) to get percentage
 		Conversion: divideBy(10.0),
 	},
 	"postgresql-blk.write.time": {
-		Name: "postgres-blk-write-time.cntr",
-		Unit: "percent",
+		Name:    "postgres-blk-write-time",
+		Counter: true,
+		Unit:    "percent",
 		// total milliseconds in, so divide by 10 to get
 		// 100 x seconds, then differentate (.cntr) to get percentage
 		Conversion: divideBy(10.0),
@@ -733,20 +809,23 @@ var translateMap = map[string]Translation{
 		Unit: "requests",
 	},
 	"nginx-handled": {
-		Name: "nginx-handled.cntr",
-		Unit: "connections",
+		Name:    "nginx-handled",
+		Counter: true,
+		Unit:    "connections",
 	},
 	"nginx-active": {
 		Name: "nginx-active",
 		Unit: "connections",
 	},
 	"nginx-accepts": {
-		Name: "nginx-accepts.cntr",
-		Unit: "connections",
+		Name:    "nginx-accepts",
+		Counter: true,
+		Unit:    "connections",
 	},
 	"nginx-requests": {
-		Name: "nginx-requests.cntr",
-		Unit: "requests",
+		Name:    "nginx-requests",
+		Counter: true,
+		Unit:    "requests",
 	},
 	"uwsgi_summary-memory-vsize": {
 		Name: "uwsgi-memory-vsize",
@@ -761,8 +840,9 @@ var translateMap = map[string]Translation{
 		Unit: "ms",
 	},
 	"uwsgi_summary-requests": {
-		Name: "uwsgi-requests.cntr",
-		Unit: "requests",
+		Name:    "uwsgi-requests",
+		Counter: true,
+		Unit:    "requests",
 	},
 	"uwsgi_summary-workers": {
 		Name: "uwsgi-workers",
@@ -773,8 +853,9 @@ var translateMap = map[string]Translation{
 		Unit: "",
 	},
 	"uwsgi_summary-exceptions": {
-		Name: "uwsgi-exceptions.cntr",
-		Unit: "exceptions",
+		Name:    "uwsgi-exceptions",
+		Counter: true,
+		Unit:    "exceptions",
 	},
 	"vault_audit_log_request-mean": {
 		Name: "vault-audit-log-requests",
@@ -801,8 +882,9 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"vault_core_check_token-mean": {
-		Name: "vault-token-checks.cntr",
-		Unit: "count",
+		Name:    "vault-token-checks",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_core_fetch_acl_and_token-mean": {
 		Name: "vault-acl-and-token-fetches",
@@ -813,16 +895,19 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"vault_core_handle_login_request-mean": {
-		Name: "vault-login-requests.cntr",
-		Unit: "count",
+		Name:    "vault-login-requests",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_core_leadership_setup_failed-mean": {
-		Name: "vault-leadership-setup-failures.cntr",
-		Unit: "count",
+		Name:    "vault-leadership-setup-failures",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_core_leadership_lost-mean": {
-		Name: "vault-leadership-losses.cntr",
-		Unit: "count",
+		Name:    "vault-leadership-losses",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_core_post_unseal-value": {
 		Name: "vault-post-unseal-ops",
@@ -845,28 +930,32 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"vault_core_step_down-mean": {
-		Name: "vault-step-downs.cntr",
-		Unit: "count",
+		Name:    "vault-step-downs",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_core_unseal-mean": {
-		Name: "vault-unseals.cntr",
-		Unit: "count",
+		Name:    "vault-unseals",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_runtime_alloc_bytes-value": {
 		Name: "vault-allocated-bytes",
 		Unit: "B",
 	},
 	"vault_runtime_free_count-value": {
-		Name: "vault-free-ops.cntr",
-		Unit: "count",
+		Name:    "vault-free-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_runtime_heap_objects-value": {
 		Name: "vault-heap-objects",
 		Unit: "count",
 	},
 	"vault_runtime_malloc_count-value": {
-		Name: "vault-malloc-ops.cntr",
-		Unit: "count",
+		Name:    "vault-malloc-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_runtime_num_goroutines-value": {
 		Name: "vault-goroutines",
@@ -882,81 +971,99 @@ var translateMap = map[string]Translation{
 		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"vault_runtime_total_gc_pause_ns-value": {
-		Name:       "vault-gc-pause-time.cntr",
+		Name:       "vault-gc-pause-time",
+		Counter:    true,
 		Unit:       "s",
 		Conversion: divideBy(1000 * 1000 * 1000),
 	},
 	"vault_runtime_total_gc_runs-value": {
-		Name: "vault-gc-runs.cntr",
-		Unit: "count",
+		Name:    "vault-gc-runs",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_expire_num_leases-value": {
-		Name: "vault-expired-leases.cntr",
-		Unit: "count",
+		Name:    "vault-expired-leases",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_expire_revoke": {
-		Name: "vault-revoke-ops.cntr",
-		Unit: "count",
+		Name:    "vault-revoke-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_expire_revoke-force": {
-		Name: "vault-revokes-force.cntr",
-		Unit: "count",
+		Name:    "vault-revokes-force",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_expire_revoke-prefix": {
-		Name: "vault-revokes-by-prefix.cntr",
-		Unit: "count",
+		Name:    "vault-revokes-by-prefix",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_expire_revoke-by-token": {
-		Name: "vault-revokes-by-token.cntr",
-		Unit: "count",
+		Name:    "vault-revokes-by-token",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_expire_renew": {
-		Name: "vault-renew-ops.cntr",
-		Unit: "count",
+		Name:    "vault-renew-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_expire_renew-token": {
 		Name: "vault-renew-token-ops",
 		Unit: "count",
 	},
 	"vault_policy_get_policy": {
-		Name: "vault-policy-get-ops.cntr",
-		Unit: "count",
+		Name:    "vault-policy-get-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_policy_list_policies": {
-		Name: "vault-policy-list-ops.cntr",
-		Unit: "count",
+		Name:    "vault-policy-list-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_policy_delete_policy": {
-		Name: "vault-policy-delete-ops.cntr",
-		Unit: "count",
+		Name:    "vault-policy-delete-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_policy_set_policy": {
-		Name: "vault-policy-set-ops.cntr",
-		Unit: "count",
+		Name:    "vault-policy-set-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_token_create": {
-		Name: "vault-token-create-ops.cntr",
-		Unit: "count",
+		Name:    "vault-token-create-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_token_createAccessor": {
-		Name: "vault-token-identifier-ops.cntr",
-		Unit: "count",
+		Name:    "vault-token-identifier-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_token_lookup": {
-		Name: "vault-token-lookups.cntr",
-		Unit: "count",
+		Name:    "vault-token-lookups",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_token_revoke": {
-		Name: "vault-token-revokes.cntr",
-		Unit: "count",
+		Name:    "vault-token-revokes",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_token_revoke-tree": {
-		Name: "vault-token-tree-revokes.cntr",
-		Unit: "count",
+		Name:    "vault-token-tree-revokes",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_token_store": {
-		Name: "vault-token-store-ops.cntr",
-		Unit: "count",
+		Name:    "vault-token-store-ops",
+		Counter: true,
+		Unit:    "count",
 	},
 	"vault_rollback_attempt_auth-token--mean": {
 		Name: "vault-rollback-attempts-auth-token",
@@ -1035,40 +1142,47 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"redis-evicted.keys": {
-		Name: "redis-evicted-keys.cntr",
-		Unit: "count",
+		Name:    "redis-evicted-keys",
+		Counter: true,
+		Unit:    "count",
 	},
 	"redis-expired.keys": {
-		Name: "redis-expired-keys.cntr",
-		Unit: "count",
+		Name:    "redis-expired-keys",
+		Counter: true,
+		Unit:    "count",
 	},
 	"redis-instantaneous.ops.per.sec": {
 		Name: "redis-ops-per-sec",
 		Unit: "count",
 	},
 	"redis-keyspace.hitrate": {
-		Name: "redis-keyspace-hitrate.cntr",
-		Unit: "count",
+		Name:    "redis-keyspace-hitrate",
+		Counter: true,
+		Unit:    "count",
 	},
 	"redis-keyspace.hits": {
-		Name: "redis-keyspace-hits.cntr",
-		Unit: "count",
+		Name:    "redis-keyspace-hits",
+		Counter: true,
+		Unit:    "count",
 	},
 	"redis-keyspace.misses": {
-		Name: "redis-keyspace-misses.cntr",
-		Unit: "count",
+		Name:    "redis-keyspace-misses",
+		Counter: true,
+		Unit:    "count",
 	},
 	"redis-master.repl.offset": {
 		Name: "redis-master-repl-offset",
 		Unit: "count",
 	},
 	"redis-pubsub.channels": {
-		Name: "redis-pubsub-channels.cntr",
-		Unit: "count",
+		Name:    "redis-pubsub-channels",
+		Counter: true,
+		Unit:    "count",
 	},
 	"redis-pubsub.patterns": {
-		Name: "redis-pubsub-patterns.cntr",
-		Unit: "count",
+		Name:    "redis-pubsub-patterns",
+		Counter: true,
+		Unit:    "count",
 	},
 	"redis-rejected.connections": {
 		Name: "redis-rejected-connections",
@@ -1087,32 +1201,39 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"redis-sync.partial.ok": {
-		Name: "redis-sync-partial-ok.cntr",
-		Unit: "count",
+		Name:    "redis-sync-partial-ok",
+		Counter: true,
+		Unit:    "count",
 	},
 	"redis-total.commands.processed": {
-		Name: "redis-total-commands-processed.cntr",
-		Unit: "count",
+		Name:    "redis-total-commands-processed",
+		Counter: true,
+		Unit:    "count",
 	},
 	"redis-total.connections.received": {
-		Name: "redis-total-connections-received.cntr",
-		Unit: "count",
+		Name:    "redis-total-connections-received",
+		Counter: true,
+		Unit:    "count",
 	},
 	"redis-total.net.input.bytes": {
-		Name: "redis-total-net-input.cntr",
-		Unit: "B",
+		Name:    "redis-total-net-input",
+		Counter: true,
+		Unit:    "B",
 	},
 	"redis-total.net.output.bytes": {
-		Name: "redis-total-output.cntr",
-		Unit: "B",
+		Name:    "redis-total-output",
+		Counter: true,
+		Unit:    "B",
 	},
 	"redis-used.cpu.sys": {
-		Name: "redis-used-cpu-sys.cntr",
-		Unit: "percent",
+		Name:    "redis-used-cpu-sys",
+		Counter: true,
+		Unit:    "percent",
 	},
 	"redis-used.cpu.user": {
-		Name: "redis-used-cpu-user.cntr",
-		Unit: "percent",
+		Name:    "redis-used-cpu-user",
+		Counter: true,
+		Unit:    "percent",
 	},
 	"redis-used.memory": {
 		Name: "redis-used-memory",
@@ -1135,20 +1256,23 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"zookeeper-open.file.descriptor.count": {
-		Name: "zookeeper-open-file-descriptor.cntr",
-		Unit: "count",
+		Name:    "zookeeper-open-file-descriptor",
+		Counter: true,
+		Unit:    "count",
 	},
 	"zookeeper-packets.sent": {
-		Name: "zookeeper-packets-sent.cntr",
-		Unit: "count",
+		Name:    "zookeeper-packets-sent",
+		Counter: true,
+		Unit:    "count",
 	},
 	"zookeeper-max.latency": {
 		Name: "zookeeper-max-latency",
 		Unit: "count",
 	},
 	"zookeeper-packets.received": {
-		Name: "zookeeper-packets-received.cntr",
-		Unit: "count",
+		Name:    "zookeeper-packets-received",
+		Counter: true,
+		Unit:    "count",
 	},
 	"zookeeper-approximate.data.size": {
 		Name: "zookeeper-approximate-data-size",
@@ -1159,43 +1283,50 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"zookeeper-max.file.descriptor.count": {
-		Name: "zookeeper-max-file-descriptor.cntr",
-		Unit: "count",
+		Name:    "zookeeper-max-file-descriptor",
+		Counter: true,
+		Unit:    "count",
 	},
 	"zookeeper-ephemerals.count": {
-		Name: "zookeeper-ephemerals.cntr",
-		Unit: "count",
+		Name:    "zookeeper-ephemerals",
+		Counter: true,
+		Unit:    "count",
 	},
 	"zookeeper-num.alive.connections": {
 		Name: "zookeeper-alive-connections",
 		Unit: "count",
 	},
 	"zookeeper-znode.count": {
-		Name: "zookeeper-znodes.cntr",
-		Unit: "count",
+		Name:    "zookeeper-znodes",
+		Counter: true,
+		Unit:    "count",
 	},
 	"zookeeper-watch.count": {
-		Name: "zookeeper-watch.cntr",
-		Unit: "count",
+		Name:    "zookeeper-watch",
+		Counter: true,
+		Unit:    "count",
 	},
 	"kafka.controller-KafkaController": {
 		Name: "kafka-controller",
 		Unit: "count",
 	},
 	"kafka.network-RequestMetrics.Count.Produce.RequestsPerSec": {
-		Name: "kafka-produce-requests.cntr",
-		Unit: "count/s",
+		Name:    "kafka-produce-requests",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"kafka.network-RequestMetrics.Count.FetchConsumer.RequestsPerSec": {
-		Name: "kafka-fetch-consumer-requests.cntr",
-		Unit: "count/s",
+		Name:    "kafka-fetch-consumer-requests",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"kafka.network-RequestMetrics.Count.FetchFollower.RequestsPerSec": {
 		Name: "kafka-fetch-follower-requests",
 		Unit: "count/s",
 	},
 	"kafka.network-RequestMetrics.Count.Produce.TotalTimeMs": {
-		Name:       "kafka-produce-time-total.cntr",
+		Name:       "kafka-produce-time-total",
+		Counter:    true,
 		Unit:       "s",
 		Conversion: divideBy(1000),
 	},
@@ -1244,12 +1375,14 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"kafka.server-DelayedFetchMetrics.Count.follower": {
-		Name: "kafka-delayed-fetch-follower.cntr",
-		Unit: "count",
+		Name:    "kafka-delayed-fetch-follower",
+		Counter: true,
+		Unit:    "count",
 	},
 	"kafka.server-DelayedFetchMetrics.Count.consumer": {
-		Name: "kafka-delayed-fetch-consumer.cntr",
-		Unit: "count",
+		Name:    "kafka-delayed-fetch-consumer",
+		Counter: true,
+		Unit:    "count",
 	},
 	"kafka.server-DelayedOperationPurgatory": {
 		Name: "kafka-delayed-operation-purgatory",
@@ -1268,16 +1401,19 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"kafka.server-FetcherStats.Count.BytesPerSec": {
-		Name: "kafka-fetcher-bytes.cntr",
-		Unit: "B/s",
+		Name:    "kafka-fetcher-bytes",
+		Counter: true,
+		Unit:    "B/s",
 	},
 	"kafka.server-FetcherStats.Count.RequestsPerSec": {
-		Name: "kafka-fetcher-requests.cntr",
-		Unit: "count/s",
+		Name:    "kafka-fetcher-requests",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"kafka.server-KafkaRequestHandlerPool.Count": {
-		Name: "kafka-request-handler-pool.cntr",
-		Unit: "count",
+		Name:    "kafka-request-handler-pool",
+		Counter: true,
+		Unit:    "count",
 	},
 	"kafka.server-LeaderReplication.byte-rate": {
 		Name: "kafka-leader-replication-rate",
@@ -1362,8 +1498,9 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"kafka.server-SessionExpireListener.Count": {
-		Name: "kafka-session-expiry-listener.cntr",
-		Unit: "count",
+		Name:    "kafka-session-expiry-listener",
+		Counter: true,
+		Unit:    "count",
 	},
 	"kafka.server-socket-server-metrics.connection-close-rate": {
 		Name: "kafka-socket-connection-close-rate",
@@ -1428,12 +1565,14 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.BytesInPerSec": {
-		Name: "kafka-bytes-in.cntr",
-		Unit: "B/s",
+		Name:    "kafka-bytes-in",
+		Counter: true,
+		Unit:    "B/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.BytesOutPerSec": {
-		Name: "kafka-bytes-out.cntr",
-		Unit: "B/s",
+		Name:    "kafka-bytes-out",
+		Counter: true,
+		Unit:    "B/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.BytesRejectedPerSec": {
 		Name: "kafka-bytes-rejected",
@@ -1444,20 +1583,24 @@ var translateMap = map[string]Translation{
 		Unit: "count/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.FailedProduceRequestsPerSec": {
-		Name: "kafka-failed-produce-requests.cntr",
-		Unit: "count/s",
+		Name:    "kafka-failed-produce-requests",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.MessagesInPerSec": {
-		Name: "kafka-messages-in.cntr",
-		Unit: "count/s",
+		Name:    "kafka-messages-in",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.TotalFetchRequestsPerSec": {
-		Name: "kafka-fetch-requests.cntr",
-		Unit: "count/s",
+		Name:    "kafka-fetch-requests",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"kafka.server-BrokerTopicMetrics.Count.TotalProduceRequestsPerSec": {
-		Name: "kafka-produce-requests.cntr",
-		Unit: "count/s",
+		Name:    "kafka-produce-requests",
+		Counter: true,
+		Unit:    "count/s",
 	},
 	"kafka.server-ReplicaManager.Count": {
 		Name: "kafka-replica-manager-count",
@@ -1609,13 +1752,50 @@ var translateMap = map[string]Translation{
 		Name: "influxdb-database-series",
 		Unit: "count",
 	},
+	"influxdb_httpd-serverError": {
+		Name:    "influxdb-httpd-server-errors",
+		Counter: true,
+		Unit:    "count",
+	},
+	"influxdb_httpd-clientError": {
+		Name:    "influxdb-httpd-client-errors",
+		Counter: true,
+		Unit:    "count",
+	},
+	"influxdb_httpd-req": {
+		Name:    "influxdb-httpd-requests",
+		Counter: true,
+		Unit:    "count",
+	},
+	"influxdb_httpd-queryReq": {
+		Name:    "influxdb-httpd-query-requests",
+		Counter: true,
+		Unit:    "count",
+	},
+	"influxdb_httpd-writeReq": {
+		Name:    "influxdb-httpd-write-requests",
+		Counter: true,
+		Unit:    "count",
+	},
+	"influxdb_httpd-pingReq": {
+		Name:    "influxdb-httpd-ping-requests",
+		Counter: true,
+		Unit:    "count",
+	},
+	"influxdb_httpd-pointsReq": {
+		Name:    "influxdb-httpd-point-requests",
+		Counter: true,
+		Unit:    "count",
+	},
 }
 
 // Translation bears the convertion info from the source to the CMP metric
 type Translation struct {
-	Name       string
-	Unit       string
-	Conversion func(interface{}) interface{}
+	Name           string
+	Specialisation string
+	Unit           string
+	Counter        bool
+	Conversion     func(interface{}) interface{}
 }
 
 func subtractFrom100Percent(value interface{}) interface{} {
@@ -1657,10 +1837,12 @@ type PostMetrics struct {
 
 // DataPoint represents a CMP metric data point
 type DataPoint struct {
-	Metric string `json:"metric"`
-	Unit   string `json:"unit"`
-	Value  string `json:"value"`
-	Time   string `json:"time"`
+	Name           string `json:"name"`
+	Specialisation string `json:"specialisation,omitempty"`
+	Unit           string `json:"unit"`
+	Value          string `json:"value"`
+	Time           string `json:"time"`
+	Counter        bool   `json:"counter"`
 }
 
 // AddMetric appends a metric data point to the list of metrics
@@ -1699,7 +1881,7 @@ func (a *CMP) Write(metrics []telegraf.Metric) error {
 	}
 
 	for _, m := range metrics {
-		log.Printf("D! [CMP] processing: %+v", m)
+		log.Printf("D! [CMP] Process %+v", m)
 
 		suffix := ""
 		cpu := m.Tags()["cpu"]
@@ -1743,36 +1925,40 @@ func (a *CMP) Write(metrics []telegraf.Metric) error {
 			}
 			metricName := m.Name() + "-" + strings.Replace(k, "_", ".", -1)
 			translation, found := translateMap[metricName]
-			if found {
-				cmpName := translation.Name
-				if len(suffix) > 0 {
-					if strings.HasSuffix(cmpName, ".cntr") {
-						cmpName = strings.TrimSuffix(cmpName, ".cntr")
-						cmpName += "." + suffix + ".cntr"
-					} else {
-						cmpName += "." + suffix
-					}
-
-				}
-
-				conversion := translation.Conversion
-				if conversion != nil {
-					v = conversion(v)
-				}
-
-				p := DataPoint{
-					Metric: cmpName,
-					Unit:   translation.Unit,
-					Value:  fmt.Sprintf("%v", v),
-					Time:   timestamp,
-				}
-				log.Printf("D! [CMP] created data point: %+v", p)
-				payload.AddMetric(p)
-
-			} else {
-				log.Printf("D! [CMP] skipping metric %s: not found in the translation map", metricName)
-
+			if !found {
+				log.Printf("D! [CMP] Skip %s", metricName)
+				continue
 			}
+
+			if translation.Conversion != nil {
+				v = translation.Conversion(v)
+			}
+
+			specialisations := []string{}
+			if translation.Specialisation != "" {
+				specialisations = append(specialisations, translation.Specialisation)
+			}
+			if suffix != "" {
+				specialisations = append(specialisations, suffix)
+			}
+
+			p := DataPoint{
+				Counter:        translation.Counter,
+				Name:           translation.Name,
+				Specialisation: strings.Join(specialisations, "."),
+				Unit:           translation.Unit,
+				Value:          fmt.Sprintf("%v", v),
+				Time:           timestamp,
+			}
+			log.Printf(
+				"D! [CMP] Create %s[%s] = %s(%s) %s",
+				p.Name,
+				p.Specialisation,
+				p.Value,
+				p.Unit,
+				p.Time,
+			)
+			payload.AddMetric(p)
 		}
 	}
 
