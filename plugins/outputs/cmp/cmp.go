@@ -1148,9 +1148,8 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"zookeeper-open.file.descriptor.count": {
-		Name:    "zookeeper-open-file-descriptor",
-		Counter: true,
-		Unit:    "count",
+		Name: "zookeeper-open-file-descriptor",
+		Unit: "count",
 	},
 	"zookeeper-packets.sent": {
 		Name:    "zookeeper-packets-sent",
@@ -1175,28 +1174,28 @@ var translateMap = map[string]Translation{
 		Unit: "count",
 	},
 	"zookeeper-max.file.descriptor.count": {
-		Name:    "zookeeper-max-file-descriptor",
-		Counter: true,
-		Unit:    "count",
+		Name: "zookeeper-max-file-descriptor",
+		Unit: "count",
 	},
 	"zookeeper-ephemerals.count": {
-		Name:    "zookeeper-ephemerals",
-		Counter: true,
-		Unit:    "count",
+		Name: "zookeeper-ephemerals",
+		Unit: "count",
 	},
 	"zookeeper-num.alive.connections": {
 		Name: "zookeeper-alive-connections",
 		Unit: "count",
 	},
 	"zookeeper-znode.count": {
-		Name:    "zookeeper-znodes",
-		Counter: true,
-		Unit:    "count",
+		Name: "zookeeper-znodes",
+		Unit: "count",
 	},
 	"zookeeper-watch.count": {
-		Name:    "zookeeper-watch",
-		Counter: true,
-		Unit:    "count",
+		Name: "zookeeper-watch",
+		Unit: "count",
+	},
+	"zookeeper-followers": {
+		Name: "zookeeper-followers",
+		Unit: "count",
 	},
 	"kafka.controller-KafkaController": {
 		Name: "kafka-controller",
